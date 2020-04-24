@@ -5,7 +5,6 @@
 class Product():
     def __init__(self):
         self.spec = dict()
-        pass
 
     def addSpec(self, args):
         # args (dict) given by controller
