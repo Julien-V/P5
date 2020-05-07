@@ -55,25 +55,23 @@ class Product():
 
     def _insert(self):
         s = self.spec
-        sql = cfg.db['insert_prod'].copy()
-        sql[1] = sql[1].format(
+        sql = cfg.sql['insert_prod']
+        sql = sql.format(
             s['product_name'], s['brands'], s['code'],
             s['categories'], s['category_id'], s['nutrition_grades'],
             s['stores'], s['added_timestamp']
             )
-        for query in sql:
-            try:
-                self.cursor.execute(query)
-            except Exception as e:
-                print(e)
-                self.cursor.execute(sql[2])
-                return
+        try:
+            self.cursor.execute(sql)
+        except Exception as e:
+            print(e)
+            return
             # self.db.executeQuery(query)
 
     def _update(self, update):
         ts = int(datetime.now().timestamp())
         # control ?
-        sql = cfg.db['prodUpdate']
+        sql = cfg.sql['prodUpdate']
         key = 'substitute_id'
         sql = sql.format(
             key,

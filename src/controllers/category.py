@@ -24,12 +24,11 @@ class Category():
         valid = self._validate()
         if not valid:
             return
-        sql = cfg.db['insert_cat'].copy()
-        sql[1] = sql[1].format(self.name)
-        for query in sql:
-            try:
-                self.cursor.execute(query)
-            except Exception as e:
-                print(e)
-                return
+        sql = cfg.sql['insert_cat']
+        sql = sql.format(self.name)
+        try:
+            self.cursor.execute(sql)
+        except Exception as e:
+            print(e)
+            return
             # self.db.executeQuery(query)

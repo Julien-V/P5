@@ -12,21 +12,39 @@ from src.models import config as cfg
 from src.controllers import controller
 from src.controllers import product
 
-# App() need some serious rework
+
+# global debug in main ?
 
 
 class App():
     def __init__(self, debug=False):
-        self.locale = cfg.locale
         self.debug = debug
-        self.running = True
+        self.running = False
+        self.first = False
+        # Const
+        self.sql = cfg.sql.copy()
+        self.result = []
+        self.resultFormatted = []
+        self.cat_id = None
+        self.prod = None
+        self.prodS = None
+        # Step
+        self.step = cfg.stepApp.copy()
+        self.cwp = self.step
+        self.cws = None
+        self.oldPath = None
+        # DB
+        # while not self.db ?
+        self.loadDB()
+
+    def loadDB(self):
         self.db = db.DB()
         self.cursor = self.db.getCursor()
-        sql = cfg.db['test']
-        # trying to get Categories
-        self.cursor.execute(sql)
+        # select * from Categories;
+        query = self.sql['test']
+        self.cursor.execute(query)
         result = self.cursor.fetchall()
-        # if Categories empty:
+        # if Categories return empty set:
         if not result:
             self.first = True
             self.firstRun()
@@ -40,147 +58,144 @@ class App():
             pop = initDB.Populate(param, self.cursor, cat_id+1)
             pop.run()
 
-    def substituateMenu(self):
-        args = cfg.menu["catChoice"]
-        catChoice = mm.ChoiceList(args[0], args[1], args[2])
-        ctrl = controller.Controller(catChoice, self.cursor)
-        rep = ctrl.choiceMenu(args[0], self.debug)
-        self.displayByCat(rep)
+    def displayChoiceList(self, view, ctrl, args):
+        self.view = view(args[0], **args[1])
+        self.ctrl = ctrl(self.view, self.cursor)
+        rep = self.ctrl.choiceMenu(args[0], self.debug)
+        return rep
 
-    def displayMenu(self):
-        args = cfg.menu["display"]
-        dispChoice = mm.ChoiceList(args[0], args[1], args[2])
-        ctrl = controller.Controller(dispChoice, self.cursor)
-        rep = ctrl.choiceMenu(args[0], self.debug)
-        if rep == 0:
-            args = cfg.menu["displayByCat"]
-            dispCatChoice = mm.ChoiceList(args[0], args[1], args[2])
-            ctrl = controller.Controller(dispCatChoice, self.cursor)
-            rep = ctrl.choiceMenu(args[0], self.debug)
-            self.displaySByCat(rep)
+    def formatDisplay(self, formattingRules):
+        # formattingRules must be a list of lambda
+        formatted = []
+        for elem in self.result:
+            r = elem
+            for rule in formattingRules:
+                r = rule(r)
+            formatted.append(r)
+        return formatted
+
+    def query(self, query, rep=None):
+        if isinstance(rep, int):
+            q = query.format(rep+1)
         else:
-            self.displaySAll()
+            q = query
+        self.cursor.execute(q)
+        return self.cursor.fetchall()
 
-    def displayByCat(self, cat):
-        # category_id start at 1 not 0
-        sql = cfg.db['displayByCat'].format(cat+1)
-        self.cursor = self.db.getCursor(True)
-        self.cursor.execute(sql)
-        result = self.cursor.fetchall()
-        # choose product
-        self.displayByProduct(result)
+    def processResult(self, processRules):
+        p = self
+        for rule in processRules:
+            p = rule(p)
+        return p
 
-    def displayByProduct(self, result):
-        listProd = []
-        # len max will be terminal.row
-        if len(result) > 20:
-            result = result[:19]
-        for prod in result:
-            text = f"{prod['id']} // {prod['product_name']}"
-            text += f" // {prod['nutrition_grades']}"
-            listProd.append(text)
-        title = "Choix du produit"
-        dispProdChoice = mm.ChoiceList(listProd, "Produit", title)
-        ctrl = controller.Controller(dispProdChoice, self.cursor)
-        rep = ctrl.choiceMenu(listProd, self.debug)
-        self.substituate(result[rep])
+    def updateProd(self):
+        if self.product and self.prodS:
+            subs = self.prodS
+            prod = self.product
+            prodObj = product.Product(self.cursor, prod['category_id'])
+            update = {'substitute_id': subs['id']}
+            prodObj.get_validate_insert(prod, update)
+        else:
+            if self.debug:
+                print(f'prod/prodS not loaded : {self.prod}//{self.prodS}')
 
-    def substituate(self, product):
-        # category_id needed at this time
-        cat_id = product['category_id']
-        sql = cfg.db['subst'].format(cat_id)
-        self.cursor.execute(sql)
-        result = self.cursor.fetchall()
-        betterProducts = []
-        score = product['nutrition_grades']
-        for prod in result:
-            # "a" < "b" = True
-            if prod['nutrition_grades'] < score:
-                betterProducts.append(prod)
-        self.displaySedProd(product, betterProducts)
-
-    def displaySedProd(self, oldProd, result):
-        oldText = (
-            "Old : "
-            f"{oldProd['product_name']} // "
-            f"{oldProd['nutrition_grades']}")
-        kw = {
-            'lines': [oldText]
-        }
-        listProd = []
-        if len(result) > 20:
-            result = result[:19]
-        for prod in result:
-            text = f"{prod['product_name']}"
-            text += f" // {prod['nutrition_grades']}"
-            listProd.append(text)
-        title = "Choix du produit à substituer"
-        text = "Substitution"
-        dispProdChoice = mm.ChoiceList(listProd, text, title, **kw)
-        ctrl = controller.Controller(dispProdChoice, self.cursor)
-        rep = ctrl.choiceMenu(listProd, self.debug)
-        self.updateSub(oldProd, result[rep])
-
-    def updateSub(self, prod, subs):
-        prodObj = product.Product(self.cursor, prod['category_id'])
-        update = {'substitute_id': subs['id']}
-        prodObj.get_validate_insert(prod, update)
-        self.run()
-
-    # 1 : Display all
-    def displaySByCat(self, cat):
-        sql = cfg.db['displaySByCat'].format(cat+1)
-        print(sql)
-        self.cursor.execute(sql)
-        print(self.cursor.fetchall())
-        # one day something will be written here ...
-
-    def displaySAll(self):
-        sql = cfg.db['displaySAll']
-        self.cursor = self.db.getCursor(True)
-        self.cursor.execute(sql)
-        result = self.cursor.fetchall()
-        # print result
-        self.displaySubstituate(result)
-
-    # better graphics tomorrow, to tired atm
-    def displaySubstituate(self, result):
-        show = []
-        for line in result:
-            prod = line
-            s_id = prod['substitute_id']
-            sql = cfg.db['prod'].format(s_id)
-            self.cursor.execute(sql)
-            prodSubs = self.cursor.fetchall()[0]
-            text = f"{prod['product_name']}"
-            text += f" // {prod['nutrition_grades']}"
-            text += f" --> {prodSubs['product_name']}"
-            text += f" // {prodSubs['nutrition_grades']}"
-            show.append(text)
-        dispProd = mm.ChoiceList(show)
-        ctrl = controller.Controller(dispProd, self.cursor)
-        rep = ctrl.choiceMenu(show, self.debug)
-        # self.details(rep)
-        self.run()
+    def quit(self):
+        self.running = False
+        print("Bye")
 
     def run(self):
-        # print menu1
-        args = cfg.menu['start'].copy()
-        if self.first:
-            # self.errorQueue
-            self.first = False
-            kw = {
-                'lines': ['Base de donnée crée et chargée']
-            }
-            args.append(kw)
-            start = mm.ChoiceList(args[0], args[1], args[2], **args[3])
-        else:
-            # can't remember if we need else for this
-            start = mm.ChoiceList(args[0], args[1], args[2])
-        ctrl = controller.Controller(start, self.cursor)
-        rep = ctrl.choiceMenu(args[0], False)
-        # condition
-        if rep == 0:
-            self.substituateMenu()
-        else:
-            self.displayMenu()
+        print('running')
+        self.running = True
+        rep = 0
+        oldRep = rep
+        previous = False
+        while self.running:
+            resultFormatted = []
+            if previous:
+                previous = False
+                rep = oldRep
+            exitRequested = False
+
+            # param = [view, controller, [list, kwargs]]
+            if 'param' not in self.cwp.keys():
+                self.cwpIsChoosePath = False
+                if self.cws is None:
+                    key = list(self.cwp.keys())[0]
+                    self.cws = key
+                param = self.cwp[self.cws].copy()
+            else:
+                self.cwpIsChoosePath = True
+                self.cws = None
+                param = self.cwp['param'].copy()
+
+            # loading params
+            if self.debug:
+                print(param)
+            view, ctrl = param[0], param[1]
+            args = param[2]
+            if len(param) == 4:
+                paramExt = param[3]
+            else:
+                paramExt = dict()
+
+            # query
+            if 'query' in paramExt.keys():
+                if self.result:
+                    self.item = self.result[rep]
+                    if '4query' in paramExt.keys():
+                        forQuery = paramExt['4query']
+                        if forQuery in self.item.keys():
+                            rep = self.item[forQuery]-1
+                self.result = self.query(paramExt['query'], rep)
+                #   process
+                if 'process' in paramExt.keys():
+                    self.result = self.processResult(paramExt['process'])
+            #   format choice list
+            if 'format' in paramExt.keys() and self.result:
+                resultFormatted = self.formatDisplay(paramExt['format'])
+                args[0] = resultFormatted
+
+            #   display choice list
+            if view and ctrl and args:
+                rep = self.displayChoiceList(view, ctrl, args)
+            else:
+                rep = None
+
+            # previous and exit
+            if rep == 77 or rep == 99:
+                if rep == 77:
+                    previous = True
+                else:
+                    exitRequested = True
+            else:
+                pass
+            # changing view
+            if exitRequested:
+                self.quit()
+
+            if self.cwpIsChoosePath:
+                if previous and self.oldPath:
+                    self.cws = self.oldPath
+                elif not previous:
+                    selectedKey = list(self.cwp.keys())[rep]
+                    self.oldPath = self.cwp
+                    self.cwp = self.cwp[selectedKey]
+            else:
+                keys = list(self.cwp.keys())
+                if self.cws in keys:
+                    indexKey = keys.index(self.cws)
+                    if indexKey > 0 and previous:
+                        previousKey = keys[indexKey-1]
+                        self.cws = previousKey
+                        oldRep = rep
+                    elif indexKey < len(keys)-1 and not previous:
+                        nextKey = keys[indexKey+1]
+                        self.cws = nextKey
+                        if nextKey == 'prodUpdate':
+                            self.prodS = self.result[rep]
+                            self.updateProd()
+                        elif nextKey == 'end':
+                            self.cwp = self.step.copy()
+                            self.cws = None
+                        elif nextKey == 'subsChoice':
+                            self.product = self.result[rep]

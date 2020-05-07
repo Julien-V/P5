@@ -16,6 +16,7 @@ class DB():
         self.user = cfg.db['connect']['user']
         self.sqlFileName = cfg.db["create_file_name"]
         self.sqlFilePath = cfg.db["create_file_path"]
+        self.dictResult = False
         self.exist = False
         self.connect()
 
@@ -52,14 +53,12 @@ class DB():
                 print(e)
                 print(query)
 
-    def getCursor(self, dictResult=False):
-        # what if cursor always return a dictionary ?
-        if dictResult:
+    def getCursor(self):
+        # result will always be returned as a dict
+        if not self.dictResult:
             self.cursor.close()
             self.cursor = self.cnx.cursor(dictionary=True)
-        else:
-            self.cursor.close()
-            self.cursor = self.cnx.cursor()
+            self.dictResult = True
         return self.cursor
 
     def save(self):

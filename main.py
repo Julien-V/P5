@@ -4,12 +4,10 @@
 from src import core
 
 
-def main():
-    app = core.App(debug=False)
-    while app.running:
-        app.run()
-        app = core.App(debug=False)
+def main(debug):
+    app = core.App(debug=debug)
+    app.run()
 
 
 if __name__ == "__main__":
-    main()
+    main(False)

@@ -15,7 +15,6 @@ class Controller():
     def __init__(self, view, model):
         self.view = view
         self.model = model
-        pass
 
     def _clear(self):
         os.system('clear')
@@ -25,11 +24,15 @@ class Controller():
         while not valid:
             if not debug:
                 self._clear()
-            rep = self.view.get()
-            try:
-                choiceList[int(rep)]
+            rep = int(self.view.get())
+            # back not yet supported
+            if rep == 99:
                 valid = True
-            except Exception as e:
-                print(e)
-                valid = False
-        return int(rep)
+            else:
+                try:
+                    choiceList[rep]
+                    valid = True
+                except Exception as e:
+                    print(e)
+                    valid = False
+        return rep

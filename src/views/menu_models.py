@@ -5,32 +5,47 @@ from src.views import menu_component as menuC
 
 
 class ChoiceList():
-    def __init__(self, values, text="", title=False, **kwargs):
+    # text and title in kwargs ?
+    def __init__(self, values, **kwargs):
         self.values = values
-        self.text = text
-        self.title = title
-        self.result = []
         if kwargs.keys():
             self.kwargs = kwargs
         else:
             self.kwargs = False
+        self.text = ''
+        self.result = []
+        self.dispOrder = [
+            menuC.Title,
+            menuC.PrintList,
+            menuC.PrintLine,
+        ]
         self.gen()
 
     def process_kwargs(self):
-        if 'lines' in self.kwargs.keys():
+        keys = self.kwargs.keys()
+        if 'lines' in keys:
             for line in self.kwargs['lines']:
                 printLineObject = menuC.PrintLine(line)
                 self.queue.append(printLineObject)
+        if 'title' in keys:
+            title = self.kwargs['title']
+            titleObject = menuC.Title(title)
+            self.queue.append(titleObject)
+        if 'text' in keys:
+            self.text = self.kwargs['text']
 
     def gen(self):
         self.queue = []
-        if self.title:
-            titleObject = menuC.Title(self.title)
-            self.queue.append(titleObject)
         printListObject = menuC.PrintList(self.values)
         self.queue.append(printListObject)
         if self.kwargs:
             self.process_kwargs()
+        temp = []
+        for obj in self.dispOrder:
+            for elem in self.queue:
+                if isinstance(elem, obj):
+                    temp.append(elem)
+        self.queue = temp
         # Input:
         self.promptObject = menuC.Prompt(self.text)
 

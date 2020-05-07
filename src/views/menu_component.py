@@ -45,16 +45,18 @@ class Prompt(menu.MenuItem):
 
 
 class PrintList(menu.MenuItem):
-    def __init__(self, values, num=True, indent=3):
+    def __init__(self, values, num=True, indent=3, limit=15):
         super().__init__(indent)
         self.values = values
         self.num = num
+        self.limit = limit
         self.gen()
 
     def gen(self):
         b = self.colors["blue"]
         B = self.colors["bold"]
         end = self.colors["endc"]
+        # "[] val"
         self.result.append("\n\n")
         for id_item, item in enumerate(self.values):
             if self.num:
@@ -67,7 +69,15 @@ class PrintList(menu.MenuItem):
                     f"{B}[{b}*{end}{B}]{end} "
                     f"{item}")
                 self.result.append(line)
-        # center is sensible to the length of a str
+        # list into sublists of size self.limit
+        # for future implementation of pages
+        if self.limit:
+            lim = self.limit
+            r = self.result
+            temp = [r[i:i+lim] for i in range(0, len(r), lim)]
+            self.result = temp[0]
+        # .center() is sensible to the length of a str
+        # and we want a nicely displayed list
         lineSize = max([len(x) for x in self.result])
         temp = []
         for line in self.result:
