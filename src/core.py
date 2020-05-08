@@ -172,7 +172,7 @@ class App():
 
             # previous and exit
             if rep == 777 or rep == 999:
-                if rep == 77:
+                if rep == 777:
                     previous = True
                 else:
                     exitRequested = True
