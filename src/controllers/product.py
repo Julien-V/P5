@@ -59,7 +59,7 @@ class Product():
         sql = sql.format(
             s['product_name'], s['brands'], s['code'],
             s['categories'], s['category_id'], s['nutrition_grades'],
-            s['stores'], s['added_timestamp']
+            s['stores'], s['url'], s['added_timestamp']
             )
         try:
             self.cursor.execute(sql)

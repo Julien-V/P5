@@ -17,6 +17,7 @@ CREATE TABLE Products(
 	nutrition_grades varchar(1) NOT NULL,
 	stores text,
 	substitute_id int,
+	url text NOT NULL,
 	added_timestamp int NOT NULL,
 	updated_timestamp int,
 	CONSTRAINT fk_category_id

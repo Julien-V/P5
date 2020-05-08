@@ -32,6 +32,7 @@ db["product_check"] = {
     'categories': str,
     'nutrition_grades': str,
     'stores': str,
+    'url': str
 }
 
 db["product_type"] = db["product_check"].copy()
@@ -64,10 +65,10 @@ sql["insert_prod"] = (
     """INSERT INTO Products """
     """(product_name, brands, code, """
     """categories, category_id, nutrition_grades, """
-    """stores, added_timestamp) """
+    """stores, url, added_timestamp) """
     """VALUES ("{}", "{}", {}, """
     """"{}", {}, "{}", """
-    """"{}", {})""")
+    """"{}", "{}", {})""")
 
 sql['prodUpdate'] = (
     """UPDATE Products """
