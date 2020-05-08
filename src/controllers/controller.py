@@ -24,15 +24,14 @@ class Controller():
         while not valid:
             if not debug:
                 self._clear()
-            rep = int(self.view.get())
-            # back not yet supported
-            if rep == 99:
+            rep = self.view.get()
+            if rep == '777' or rep == '999':
                 valid = True
             else:
                 try:
-                    choiceList[rep]
+                    choiceList[int(rep)]
                     valid = True
                 except Exception as e:
                     print(e)
                     valid = False
-        return rep
+        return int(rep)

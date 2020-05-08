@@ -4,10 +4,10 @@
 from src import core
 
 
-def main(debug):
-    app = core.App(debug=debug)
+def main(debug=False):
+    app = core.App(debug)
     app.run()
 
 
 if __name__ == "__main__":
-    main(False)
+    main()

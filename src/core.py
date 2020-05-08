@@ -1,16 +1,15 @@
 #!/usr/bin/python3
 # coding : utf-8
 
-import initDB
 
+import initDB
 from src.views import menu
 from src.views import menu_models as mm
 
 from src.models import db
 from src.models import config as cfg
 
-from src.controllers import controller
-from src.controllers import product
+from src.controllers import controller, product
 
 
 # global debug in main ?
@@ -24,7 +23,7 @@ class App():
         # Const
         self.sql = cfg.sql.copy()
         self.result = []
-        self.resultFormatted = []
+        self.item = dict()
         self.cat_id = None
         self.prod = None
         self.prodS = None
@@ -32,7 +31,7 @@ class App():
         self.step = cfg.stepApp.copy()
         self.cwp = self.step
         self.cws = None
-        self.oldPath = None
+        self.oldPath = list()
         # DB
         # while not self.db ?
         self.loadDB()
@@ -99,21 +98,20 @@ class App():
             if self.debug:
                 print(f'prod/prodS not loaded : {self.prod}//{self.prodS}')
 
-    def quit(self):
-        self.running = False
-        print("Bye")
-
     def run(self):
-        print('running')
+        print('core.App running')
         self.running = True
         rep = 0
-        oldRep = rep
+        oldRep = list()
         previous = False
         while self.running:
             resultFormatted = []
             if previous:
                 previous = False
-                rep = oldRep
+                if oldRep:
+                    rep = oldRep.pop()
+                else:
+                    rep = 0
             exitRequested = False
 
             # param = [view, controller, [list, kwargs]]
@@ -129,23 +127,32 @@ class App():
                 param = self.cwp['param'].copy()
 
             # loading params
-            if self.debug:
-                print(param)
             view, ctrl = param[0], param[1]
-            args = param[2]
+            if param[2]:
+                args = param[2].copy()
             if len(param) == 4:
                 paramExt = param[3]
             else:
                 paramExt = dict()
 
+            if self.debug:
+                print(f"cws: {self.cws}")
+                print(f"param: {param}")
+                print(f"len(oldPath): {len(self.oldPath)}")
+                print(f"oldRep: {oldRep}")
+                print(f"rep: {rep}")
+
             # query
             if 'query' in paramExt.keys():
                 if self.result:
                     self.item = self.result[rep]
-                    if '4query' in paramExt.keys():
-                        forQuery = paramExt['4query']
-                        if forQuery in self.item.keys():
-                            rep = self.item[forQuery]-1
+                else:
+                    self.item = self.item
+                if '4query' in paramExt.keys():
+                    print(self.item.keys())
+                    forQuery = paramExt['4query']
+                    if forQuery in self.item.keys():
+                        rep = self.item[forQuery]-1
                 self.result = self.query(paramExt['query'], rep)
                 #   process
                 if 'process' in paramExt.keys():
@@ -155,6 +162,8 @@ class App():
                 resultFormatted = self.formatDisplay(paramExt['format'])
                 args[0] = resultFormatted
 
+            if self.debug:
+                print(f"len(result): {len(self.result)}")
             #   display choice list
             if view and ctrl and args:
                 rep = self.displayChoiceList(view, ctrl, args)
@@ -162,7 +171,7 @@ class App():
                 rep = None
 
             # previous and exit
-            if rep == 77 or rep == 99:
+            if rep == 777 or rep == 999:
                 if rep == 77:
                     previous = True
                 else:
@@ -170,25 +179,26 @@ class App():
             else:
                 pass
             # changing view
-            if exitRequested:
-                self.quit()
 
-            if self.cwpIsChoosePath:
+            if self.cwpIsChoosePath and not exitRequested:
                 if previous and self.oldPath:
-                    self.cws = self.oldPath
+                    self.cwp = self.oldPath.pop()
                 elif not previous:
                     selectedKey = list(self.cwp.keys())[rep]
-                    self.oldPath = self.cwp
+                    self.oldPath.append(self.cwp)
                     self.cwp = self.cwp[selectedKey]
-            else:
+                    oldRep.append(rep)
+            elif not self.cwpIsChoosePath and not exitRequested:
                 keys = list(self.cwp.keys())
                 if self.cws in keys:
                     indexKey = keys.index(self.cws)
                     if indexKey > 0 and previous:
                         previousKey = keys[indexKey-1]
                         self.cws = previousKey
-                        oldRep = rep
+                    elif indexKey == 0 and previous:
+                        self.cwp = self.oldPath.pop()
                     elif indexKey < len(keys)-1 and not previous:
+                        oldRep.append(rep)
                         nextKey = keys[indexKey+1]
                         self.cws = nextKey
                         if nextKey == 'prodUpdate':
@@ -197,5 +207,10 @@ class App():
                         elif nextKey == 'end':
                             self.cwp = self.step.copy()
                             self.cws = None
+                            self.oldPath = list()
+                            oldRep = list()
                         elif nextKey == 'subsChoice':
                             self.product = self.result[rep]
+            elif exitRequested:
+                self.running = False
+                print('Bye')

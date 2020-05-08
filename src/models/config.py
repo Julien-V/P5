@@ -251,7 +251,7 @@ prodChoice = [choice, ctrller, text['prodChoice'], paramExtPC]
 # prodDetails = [choice, ctrller, text['prodDetails'], paramExtPD]
 subsChoice = [choice, ctrller, text['subsChoice'], paramExtSC]
 # subsDetails = [choice, ctrller, text['subsDetails']]
-prodUpdate = [None, None, None]  # the end
+end = [None, None, None]  # the end
 
 dispChoice = [choice, ctrller, text['dispChoice'], paramExtDC]
 
@@ -262,15 +262,15 @@ stepSub = {
     # 'prodDetails': prodDetails,
     'subsChoice': subsChoice,
     # 'subsDetails': subsDetails  # mm.ProdDetails ?
-    'prodUpdate': prodUpdate,
-    'end': prodUpdate
+    'prodUpdate': end,
+    'end': end
 }
 
 # Display
 stepDispAll = {
     'dispChoice': dispChoice,
     # 'prodDetails': prodDetails
-    'end': prodUpdate
+    'end': end
 }
 
 

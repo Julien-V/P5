@@ -31,4 +31,3 @@ class Category():
         except Exception as e:
             print(e)
             return
-            # self.db.executeQuery(query)
