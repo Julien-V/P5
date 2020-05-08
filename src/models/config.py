@@ -200,6 +200,7 @@ paramExtPC = {
 # prodDetails
 nG = 'nutrition_grades'
 
+
 # substChoice
 paramExtSC = {
     '4query': 'category_id',
@@ -244,11 +245,12 @@ args = [listValues, **kwargs]
 var = [view, controller, args, #format with lambda?,# query ?]"""
 
 choice = mm.ChoiceList
+printLine = mm.PrintLineDB
 ctrller = ctrl.Controller
 
 catChoice = [choice, ctrller, text['catChoice'], paramExtCC]
 prodChoice = [choice, ctrller, text['prodChoice'], paramExtPC]
-# prodDetails = [choice, ctrller, text['prodDetails'], paramExtPD]
+prodDetails = [printLine, ctrller, text['prodDetails']]
 subsChoice = [choice, ctrller, text['subsChoice'], paramExtSC]
 # subsDetails = [choice, ctrller, text['subsDetails']]
 end = [None, None, None]  # the end
@@ -259,9 +261,7 @@ dispChoice = [choice, ctrller, text['dispChoice'], paramExtDC]
 stepSub = {
     'catChoice': catChoice,
     'prodChoice': prodChoice,
-    # 'prodDetails': prodDetails,
     'subsChoice': subsChoice,
-    # 'subsDetails': subsDetails  # mm.ProdDetails ?
     'prodUpdate': end,
     'end': end
 }
@@ -269,7 +269,7 @@ stepSub = {
 # Display
 stepDispAll = {
     'dispChoice': dispChoice,
-    # 'prodDetails': prodDetails
+    'prodDetails': prodDetails,
     'end': end
 }
 

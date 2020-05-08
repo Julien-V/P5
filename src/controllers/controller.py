@@ -35,3 +35,16 @@ class Controller():
                     print(e)
                     valid = False
         return int(rep)
+
+    def printLineDB(self, val, debug=False):
+        valid = False
+        while not valid:
+            if not debug:
+                self._clear()
+            rep = self.view.get()
+            if rep == '777' or rep == '999':
+                valid = True
+            else:
+                valid = True
+                rep = '777'
+        return int(rep)

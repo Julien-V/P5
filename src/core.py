@@ -57,10 +57,15 @@ class App():
             pop = initDB.Populate(param, self.cursor, cat_id+1)
             pop.run()
 
-    def displayChoiceList(self, view, ctrl, args):
-        self.view = view(args[0], **args[1])
-        self.ctrl = ctrl(self.view, self.cursor)
-        rep = self.ctrl.choiceMenu(args[0], self.debug)
+    def displayView(self, view, ctrl, args, r):
+        if view == cfg.choice:
+            self.view = view(args[0], **args[1])
+            self.ctrl = ctrl(self.view, self.cursor)
+            rep = self.ctrl.choiceMenu(args[0], self.debug)
+        elif view == cfg.printLine:
+            self.view = view(self.result[r], **args[1])
+            self.ctrl = ctrl(self.view, self.cursor)
+            rep = self.ctrl.printLineDB(self.result[r], self.debug)
         return rep
 
     def formatDisplay(self, formattingRules):
@@ -166,7 +171,7 @@ class App():
                 print(f"len(result): {len(self.result)}")
             #   display choice list
             if view and ctrl and args:
-                rep = self.displayChoiceList(view, ctrl, args)
+                rep = self.displayView(view, ctrl, args, rep)
             else:
                 rep = None
 
