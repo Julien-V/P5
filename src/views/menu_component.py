@@ -50,7 +50,21 @@ class PrintList(menu.MenuItem):
         self.values = values
         self.num = num
         self.limit = limit
+        self.pages = list()
+        self.page = 0
         self.gen()
+
+    def linesLengthCheck(self):
+        # .center() is sensible to the length of a str
+        # and we want a nicely displayed list
+        lineSize = max([len(x) for x in self.result])
+        temp = []
+        for line in self.result:
+            if len(line) < lineSize:
+                line += " "*(lineSize-len(line))
+            temp.append(line)
+        self.result = temp
+        self.result.append("\n\n")
 
     def gen(self):
         b = self.colors["blue"]
@@ -71,21 +85,20 @@ class PrintList(menu.MenuItem):
                 self.result.append(line)
         # list into sublists of size self.limit
         # for future implementation of pages
-        if self.limit:
-            lim = self.limit
-            r = self.result
-            temp = [r[i:i+lim] for i in range(0, len(r), lim)]
-            self.result = temp[0]
-        # .center() is sensible to the length of a str
-        # and we want a nicely displayed list
-        lineSize = max([len(x) for x in self.result])
-        temp = []
-        for line in self.result:
-            if len(line) < lineSize:
-                line += " "*(lineSize-len(line))
-            temp.append(line)
-        self.result = temp
-        self.result.append("\n\n")
+        lim = self.limit
+        r = self.result
+        temp = [r[i:i+lim] for i in range(0, len(r), lim)]
+        self.pages = temp
+        self.result = temp[self.page]
+        self.linesLengthCheck()
+
+    def genNextPage(self):
+        if len(self.result)-1 > self.page:
+            self.page += 1
+        else:
+            self.page = 0
+        self.result = self.pages[self.page]
+
 
     def get(self):
         for line in self.result:

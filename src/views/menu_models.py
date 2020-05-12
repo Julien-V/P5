@@ -13,7 +13,7 @@ class ChoiceList():
         else:
             self.kwargs = False
         self.text = ''
-        self.result = []
+        self.resizedResult = None
         self.dispOrder = [
             menuC.Title,
             menuC.PrintList,
@@ -37,6 +37,7 @@ class ChoiceList():
     def gen(self):
         self.queue = []
         printListObject = menuC.PrintList(self.values)
+        self.resizedResult = printListObject.result
         self.queue.append(printListObject)
         if self.kwargs:
             self.process_kwargs()
@@ -136,7 +137,12 @@ class PrintLineDB():
             self.comp()
         else:
             for item in self.prod.items():
-                self.queue.append(menuC.PrintLine(item))
+                # modify display
+                (key, val) = item
+                g = self.colors['green']
+                end = self.colors['endc']
+                txt = f"{end}{g}{key} :{end} {val}{end}"
+                self.queue.append(menuC.PrintLine(txt))
 
     def get(self):
         # sorting

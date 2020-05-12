@@ -194,7 +194,7 @@ paramExtPC = {
     '4query': 'category_id',
     'query': sql['displayByCat'],
     'format': [
-        lambda i: [i, f"{i['id']} // {i['product_name']}"],
+        lambda i: [i, f"{i['product_name']} // {i['brands']}"],
         lambda i: f"{i[1]} // {i[0]['nutrition_grades']}"
     ]
 }
@@ -252,8 +252,8 @@ ctrller = ctrl.Controller
 catChoice = [choice, ctrller, text['catChoice'], paramExtCC]
 prodChoice = [choice, ctrller, text['prodChoice'], paramExtPC]
 prodDetails = [printLine, ctrller, text['prodDetails']]
-subsChoice = [choice, ctrller, text['subsChoice'], paramExtSC]
-# subsDetails = [choice, ctrller, text['subsDetails']]
+# subsChoice = [choice, ctrller, text['subsChoice'], paramExtSC]
+subsProp = [printLine, ctrller, text['subsDetails'], paramExtSC]
 end = [None, None, None]  # the end
 
 dispChoice = [choice, ctrller, text['dispChoice'], paramExtDC]
@@ -262,7 +262,7 @@ dispChoice = [choice, ctrller, text['dispChoice'], paramExtDC]
 stepSub = {
     'catChoice': catChoice,
     'prodChoice': prodChoice,
-    'subsChoice': subsChoice,
+    'subsChoice': subsProp,
     'prodUpdate': end,
     'end': end
 }

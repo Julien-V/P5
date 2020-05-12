@@ -62,10 +62,18 @@ class App():
             self.view = view(args[0], **args[1])
             self.ctrl = ctrl(self.view, self.cursor)
             rep = self.ctrl.choiceMenu(args[0], self.debug)
-        elif view == cfg.printLine:
-            self.view = view(self.result[r], **args[1])
+        elif view == cfg.printLine and self.result:
+            if r >= len(self.result):
+                val = self.result[0]
+            else:
+                val = self.result[r]
+            self.view = view(val, **args[1])
             self.ctrl = ctrl(self.view, self.cursor)
-            rep = self.ctrl.printLineDB(self.result[r], self.debug)
+            rep = self.ctrl.printLineDB(val, self.debug)
+            if not self.view.substitute and rep not in [777, 999]:
+                rep = r
+        else:
+            rep = 777
         return rep
 
     def formatDisplay(self, formattingRules):

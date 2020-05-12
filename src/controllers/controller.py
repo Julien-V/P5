@@ -25,6 +25,10 @@ class Controller():
             if not debug:
                 self._clear()
             rep = self.view.get()
+            choiceList = self.view.resizedResult.copy()
+            # get rid of \n
+            choiceList.remove(choiceList[0])
+            choiceList.remove(choiceList[-1])
             if rep == '777' or rep == '999':
                 valid = True
             else:
@@ -45,6 +49,13 @@ class Controller():
             if rep == '777' or rep == '999':
                 valid = True
             else:
-                valid = True
-                rep = '777'
+                try:
+                    r = int(rep)
+                    if r == 888:
+                        self.view.nextSubs()
+                    else:
+                        valid = True
+                except Exception as e:
+                    print(e)
+                    valid = False
         return int(rep)
