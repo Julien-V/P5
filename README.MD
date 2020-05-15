@@ -34,26 +34,6 @@ Le terminal affiche les choix suivants :
 * Si l'utilisateur entre un caractère qui n'est pas un chiffre, le programme doit lui répéter la question,
 * La recherche doit s'effectuer sur une base MySql.
 
-## Étapes recommandés
-
-### 1. Organiser son travail
-* Découper votre programme en user stories, puis en tâches et sous-tâches.
-* Github et premier push
-* Écrire la documentation
-### 2. Construire la base de données
-* Schéma de la base de donnée
-* Analyse des données de l'API Open Food Facts
-* Créer la base de donnée
-* Script d'initialisation de la BDD
-### 3. Construire le programme
-* Lister les fonctionnalités
-* Construisez l'architecture
-### 4. Interagir avec la BDD
-* Système de question réponse
-* Recherche dans la base de donnée
-* Enregistrement des données
-
-
 ## Livrables
 
 * Modèle physique de données et utilisant l’outil informatique de votre choix.
@@ -61,6 +41,76 @@ Le terminal affiche les choix suivants :
 * Code source publié sur Github https://github.com/Julien-V/P5/
 * Tableau Trello. https://trello.com/b/XfkxWHrN/projet-5
 * Document texte expliquant la démarche choisie, les difficultés rencontrées et les solutions trouvées.
+
+
+
+## Documentation
+
+`main.main()`
+
+Appelle la méthode core.App.run()
+
+`initDB.Populate`
+
+Récupère les produits d'une catégorie via l'API d'Open Food Facts et les insères dans la base de données
+
+### src/
+
+`src.core.App`
+
+Class principale, gère les controllers, les views et les models
+
+### src/controllers
+
+`src.controllers.controller.Controller`
+
+Contrôle la validité des différentes réponses utilisateur
+
+`src.controllers.category.Category`
+
+Représente une catégorie, contrôle et insère dans la BDD
+
+`src.controllers.product.Product`
+
+Représente un produit, contrôle et insère dans la BDD
+### src/models
+
+`src.models.config`
+
+Fichier de configuration, contient les étapes et les requêtes SQL
+
+`src.models.db.DB`
+
+Permet d'interagir avec la base de données
+### src/views
+
+`src.views.menu.MenuItem`
+
+Class parent pour les objets de src.views.menu_component
+
+`src.views.menu.menu_component.Title`
+
+Une sous class de MenuItem pour afficher un titre
+
+`src.views.menu.menu_component.Prompt`
+
+Une sous class de MenuItem pour personnaliser l'affichage du input
+
+`src.views.menu.menu_component.PrintList`
+
+Une sous class de MenuItem pour afficher une liste
+
+`src.views.menu.menu_component.PrintLine`
+
+Une sous class de MenuItem pour afficher une ligne
+
+`src.views.menu.menu_models.ChoiceList`
+
+Cette class rassemble différents composants de src.views.menu_component pour créer une view permettant d'afficher une liste et de sélectionner un élément de cette liste
+
+`src.views.menu.menu_models.PrintLineDB`
+
+Cette class rassemble différents composants de src.views.menu_component pour créer une view affichant le détail d'un produit ou le produit et le substitut côte à côte.
 
 
 
@@ -79,6 +129,23 @@ Lancement
 python3 main.py
 ```
 
-
 * Testé sous Debian avec Python 3.7.6
+
+## Ajouter une catégorie
+### Supprimer la base de données
+```
+DROP DATABASE openff;
+```
+### Ajouter la catégorie dans config.py
+_Dans src.models.config_
+```python
+cat = ["desserts-au-chocolat", "boissons-instantanees"]
+cat.append("cereales-au-chocolat")
+cat.append("pizzas")  # nouvelle catégorie
+```
+### Lancement du programme
+```
+python3 main.py
+```
+
 
