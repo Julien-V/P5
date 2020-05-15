@@ -5,8 +5,18 @@ from src.views import menu_component as menuC
 
 
 class ChoiceList():
-    # text and title in kwargs ?
+    """This class gathers multiples components from src.views.menu_component
+    in order to create and display a view.
+    This view display a list and an input to get user's anwser.
+    Title, some lines before the input and input customization are optionals
+    >>> cl = menu_models.ChoiceList(values)
+    >>> cl.get()
+    """
     def __init__(self, values, **kwargs):
+        """This method initializes the class and call self.gen()
+        :param values: list of values to display
+        :param kwargs: optional dict for optional display
+        """
         self.values = values
         if kwargs.keys():
             self.kwargs = kwargs
@@ -22,6 +32,7 @@ class ChoiceList():
         self.gen()
 
     def process_kwargs(self):
+        """This method processes optionals parameters in self.kwargs"""
         keys = self.kwargs.keys()
         if 'lines' in keys:
             for line in self.kwargs['lines']:
@@ -35,6 +46,9 @@ class ChoiceList():
             self.text = self.kwargs['text']
 
     def gen(self):
+        """This method creates the menu components needed and
+        add them to queue (list)
+        """
         self.queue = []
         printListObject = menuC.PrintList(self.values)
         self.resizedResult = printListObject.result
@@ -51,6 +65,10 @@ class ChoiceList():
         self.promptObject = menuC.Prompt(self.text)
 
     def get(self):
+        """This method prints the result of get() method in each
+        menu_components added to queue
+        :return: the method get() of a src.views.menu_component.Prompt object
+        """
         for elem in self.queue:
             for line in elem.get():
                 print(line)
@@ -58,8 +76,18 @@ class ChoiceList():
 
 
 class PrintLineDB():
+    """This class gathers multiples components from src.views.menu_component
+    in order to create and display a view.
+    This view display a product details (dict)
+    Title, some lines before the input and input customization are optionals
+    >>> pl = menu_models.PrintLineDB(values)
+    >>> pl.get()
+    """
     def __init__(self, val, **kwargs):
-        # values must be a dict
+        """This method initializes the class and call self.gen()
+        :param val: a product (dict)
+        :param kwargs: optional dict for optional display
+        """
         self.val = val
         if kwargs.keys():
             self.kwargs = kwargs
@@ -81,6 +109,9 @@ class PrintLineDB():
         pass
 
     def comp(self):
+        """This method adds to queue the details of a product and
+        his substitute
+        """
         b = self.colors['blue']
         B = self.colors['bold']
         end = self.colors['endc']
@@ -123,6 +154,9 @@ class PrintLineDB():
             self.queue.append(sep)
 
     def gen(self):
+        """This method creates the menu components needed and
+        add them to queue (list)
+        """
         self.queue = []
         if self.kwargs:
             self.process_kwargs()
@@ -145,6 +179,10 @@ class PrintLineDB():
                 self.queue.append(menuC.PrintLine(txt))
 
     def get(self):
+        """This method prints the result of get() method in each
+        menu_components added to queue
+        :return: the result of an input
+        """
         # sorting
         temp = list()
         for obj in self.dispOrder:

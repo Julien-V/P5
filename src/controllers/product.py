@@ -7,13 +7,23 @@ from src.models import config as cfg
 
 
 class Product():
+    """This class represents a product,
+    control and insert its caracteristics into database
+    """
     def __init__(self, model, category_id):
-        # self.view = view
+        """This method initializes the class
+        :param model: cursor object linked to database
+        :param category_id:
+        """
         self.cursor = model
         self.cat_id = category_id
         self.spec = dict()
 
     def get_validate_insert(self, prod, update=False):
+        """This method checks if all NOT NULL value exit in self.spec
+        :param prod: product (dict)
+        :param update: set by default to False
+        """
         for key in cfg.db['product_check']:
             if key in prod.keys():
                 # validate and fix can go here no ?
@@ -35,6 +45,9 @@ class Product():
             self._update(update)
 
     def _validate_product_spec(self):
+        """This method validates types and length of self.spec
+        :return: True if self.spec is valided else False
+        """
         s = self.spec
         missing = []
         for key in cfg.db['product_check']:
@@ -54,6 +67,7 @@ class Product():
         return True
 
     def _insert(self):
+        """This method inserts the product into database"""
         s = self.spec
         sql = cfg.sql['insert_prod']
         sql = sql.format(
@@ -66,11 +80,13 @@ class Product():
         except Exception as e:
             print(e)
             return
-            # self.db.executeQuery(query)
 
     def _update(self, update):
+        """This method updates a product row
+        :param update: a dict with information to update
+        """
         ts = int(datetime.now().timestamp())
-        # control ?
+        # sql = UPDATE Products SET {} = {}, {}, {} WHERE id= {}
         sql = cfg.sql['prodUpdate']
         key = 'substitute_id'
         sql = sql.format(

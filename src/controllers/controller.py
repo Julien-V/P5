@@ -3,23 +3,27 @@
 
 import os
 
-from src.views import menu
-from src.views import menu_component
-from src.views import menu_models
-
-from src.models import db
 from src.models import config as cfg
 
 
 class Controller():
+    """This class controls the validity of user's anwser"""
     def __init__(self, view, model):
+        """This method initializes the class
+        :param view: a view (src.views.menu_models)
+        :param model: a model, database or cursor"""
         self.view = view
         self.model = model
 
     def _clear(self):
+        """This method clears the screen"""
         os.system('clear')
 
-    def choiceMenu(self, choiceList, debug=False):
+    def choiceMenu(self, debug=False):
+        """This method controls the choice of an element in a list
+        :param debug: debug set by default to False
+        :return: int of user's anwser
+        """
         valid = False
         while not valid:
             if not debug:
@@ -29,7 +33,7 @@ class Controller():
             # get rid of \n
             choiceList.remove(choiceList[0])
             choiceList.remove(choiceList[-1])
-            if rep == '777' or rep == '999':
+            if rep == cfg.back or rep == cfg.exit:
                 valid = True
             else:
                 try:
@@ -40,21 +44,22 @@ class Controller():
                     valid = False
         return int(rep)
 
-    def printLineDB(self, val, debug=False):
+    def printLineDB(self, debug=False):
+        """This method controls user's anwser
+        :param debug: debug set by default to False
+        :return: int of user's anwser
+        """
         valid = False
         while not valid:
             if not debug:
                 self._clear()
             rep = self.view.get()
-            if rep == '777' or rep == '999':
+            if rep == cfg.back or rep == cfg.exit:
                 valid = True
             else:
                 try:
                     r = int(rep)
-                    if r == 888:
-                        self.view.nextSubs()
-                    else:
-                        valid = True
+                    valid = True
                 except Exception as e:
                     print(e)
                     valid = False

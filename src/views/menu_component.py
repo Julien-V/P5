@@ -14,6 +14,7 @@ class Title(menu.MenuItem):
     def gen(self):
         B = self.colors["bold"]
         end = self.colors["endc"]
+        # \n self.text \n
         self.result = [
             f"\n",
             f"{B}{self.text}{end}",
@@ -36,6 +37,7 @@ class Prompt(menu.MenuItem):
         g = self.colors["green"]
         B = self.colors["bold"]
         end = self.colors["endc"]
+        # [+] self.text >>>
         self.line = (
             f"{B}[{g}+{end}{B}] "
             f"{self.text} >>> {end}")
@@ -45,7 +47,15 @@ class Prompt(menu.MenuItem):
 
 
 class PrintList(menu.MenuItem):
+    """This class (a subclass of menu.MenuItem) prints a list"""
     def __init__(self, values, num=True, indent=3, limit=15):
+        """This method initializes the class and call gen() method
+        :param values: list to display
+        :param num: numerotation beside list elem, set by default to True
+        :param indent: number of indent, set by default to 3
+        :param limit: max number of list element to be displayed,
+        set by default to 15
+        """
         super().__init__(indent)
         self.values = values
         self.num = num
@@ -55,8 +65,10 @@ class PrintList(menu.MenuItem):
         self.gen()
 
     def linesLengthCheck(self):
-        # .center() is sensible to the length of a str
-        # and we want a nicely displayed list
+        """This method adds extra spaces to all element
+        .center() is sensible to the length of a str
+        """
+        # we want a nicely displayed list
         lineSize = max([len(x) for x in self.result])
         temp = []
         for line in self.result:
@@ -67,6 +79,10 @@ class PrintList(menu.MenuItem):
         self.result.append("\n\n")
 
     def gen(self):
+        """This method formats all elements in self.values
+        and add them to self.result then self.result is resized to
+        match self.limit
+        """
         b = self.colors["blue"]
         B = self.colors["bold"]
         end = self.colors["endc"]
@@ -74,11 +90,13 @@ class PrintList(menu.MenuItem):
         self.result.append("\n\n")
         for id_item, item in enumerate(self.values):
             if self.num:
+                # [id_item] item
                 line = (
                     f"{B}[{b}{id_item}{end}{B}]{end} "
                     f"{item}")
                 self.result.append(line)
             else:
+                # [*] item
                 line = (
                     f"{B}[{b}*{end}{B}]{end} "
                     f"{item}")
@@ -87,18 +105,21 @@ class PrintList(menu.MenuItem):
         # for future implementation of pages
         lim = self.limit
         r = self.result
+        # slice a list into multiple sublist (with their length matching limit)
         temp = [r[i:i+lim] for i in range(0, len(r), lim)]
         self.pages = temp
         self.result = temp[self.page]
         self.linesLengthCheck()
 
     def genNextPage(self):
+        """This method displays the next page of the list
+        .. note: method unused
+        """
         if len(self.result)-1 > self.page:
             self.page += 1
         else:
             self.page = 0
         self.result = self.pages[self.page]
-
 
     def get(self):
         for line in self.result:
@@ -115,6 +136,7 @@ class PrintLine(menu.MenuItem):
         b = self.colors["blue"]
         B = self.colors["bold"]
         end = self.colors["endc"]
+        # [*] self.text
         line = (
             f"{B}{b}[*] {end}{B}"
             f"{self.text}{end}"

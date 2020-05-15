@@ -3,14 +3,16 @@
 
 import getpass
 
-from src.views import menu
+# from src.views import menu
 from src.views import menu_models as mm
 
 from src.controllers import controller as ctrl
-# config.py here(src/models) or in src/ with core.py ?
 
 locale = "fr"
 title = "Projet 5"
+
+back = '777'
+exit = '999'
 
 # DB
 #########################
@@ -240,10 +242,11 @@ paramExtDC = {
 # Menu :
 #########################
 
-""" STEP FORMAT
-kwargs.keys() = ['text', 'title', lines']
+""" STEP
+kwargs.keys() = ['text', 'title', lines']  # possible key
 args = [listValues, **kwargs]
-var = [view, controller, args, #format with lambda?,# query ?]"""
+var = [view, controller, args, paramExt]
+"""
 
 choice = mm.ChoiceList
 printLine = mm.PrintLineDB

@@ -10,8 +10,9 @@ from src.models import config as cfg
 
 
 class DB():
-    """Manage DB"""
+    """This class connects or creates a MySQL database."""
     def __init__(self):
+        """This method initializes the class and call self.connect()"""
         self.name = cfg.db["name"]
         self.user = cfg.db['connect']['user']
         self.sqlFileName = cfg.db["create_file_name"]
@@ -21,6 +22,9 @@ class DB():
         self.connect()
 
     def connect(self):
+        """This method attempts a connection to mysql, check if db exist
+        and use it
+        """
         try:
             self.cnx = mysqlC.connect(
                 user=self.user,
@@ -39,6 +43,9 @@ class DB():
         self.cursor.execute("USE {}".format(self.name))
 
     def create(self):
+        """This method is called by connect()
+        and create database with a *.sql file
+        """
         dirs = os.listdir(self.sqlFilePath)
         if self.sqlFileName not in dirs:
             print(self.sqlFileName, " not found")
@@ -54,6 +61,7 @@ class DB():
                 print(query)
 
     def getCursor(self):
+        """This method returns a cursor to execute queries"""
         # result will always be returned as a dict
         if not self.dictResult:
             self.cursor.close()
@@ -62,9 +70,13 @@ class DB():
         return self.cursor
 
     def save(self):
+        """This method commits modification into database"""
         self.cnx.commit()
 
     def __del__(self):
+        """This method saves, closes cursor and connection to DB
+        when this object is removed
+        """
         self.save()
         self.cursor.close()
         self.cnx.close()

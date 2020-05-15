@@ -6,7 +6,11 @@ import shutil
 
 
 class MenuItem():
+    """This class is the parent class of menu_component class"""
     def __init__(self, indent=1):
+        """This method initializes the class
+        :param indent: set by default to 1
+        """
         self.geometry = shutil.get_terminal_size()
         self.col = self.geometry.columns
         self.rows = self.geometry.lines
