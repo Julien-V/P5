@@ -72,11 +72,14 @@ class Product():
         sql = cfg.sql['insert_prod']
         sql = sql.format(
             s['product_name'], s['brands'], s['code'],
-            s['categories'], s['category_id'], s['nutrition_grades'],
+            s['categories'], s['nutrition_grades'],
             s['stores'], s['url'], s['added_timestamp']
             )
+        sql2 = cfg.sql['insert_PiC']
         try:
             self.cursor.execute(sql)
+            sql2 = sql2.format(self.cat_id, self.cursor.lastrowid)
+            self.cursor.execute(sql2)
         except Exception as e:
             print(e)
             return

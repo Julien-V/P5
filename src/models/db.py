@@ -56,7 +56,7 @@ class DB():
         for query in queries:
             try:
                 self.cursor.execute(query)
-            except Exception as e:
+            except mysqlC.error as e:
                 print(e)
                 print(query)
 

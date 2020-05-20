@@ -63,13 +63,17 @@ sql["insert_cat"] = (
     """INSERT INTO Categories """
     """(category_name) VALUES ("{}")""")
 
+sql["insert_PiC"] = (
+    """INSERT INTO Prod_in_Cat """
+    """(category_id, product_id) VALUES ({}, {})""")
+
 sql["insert_prod"] = (
     """INSERT INTO Products """
     """(product_name, brands, code, """
-    """categories, category_id, nutrition_grades, """
+    """categories, nutrition_grades, """
     """stores, url, added_timestamp) """
     """VALUES ("{}", "{}", {}, """
-    """"{}", {}, "{}", """
+    """"{}", "{}", """
     """"{}", "{}", {})""")
 
 sql['prodUpdate'] = (
@@ -79,12 +83,12 @@ sql['prodUpdate'] = (
     """WHERE id = {}""")
 
 # SQL Subs Menu
-sql['displayByCat'] = "SELECT * FROM Products WHERE category_id = {}"
+sql['displayByCat'] = (
+    """SELECT * FROM Products LEFT JOIN Prod_in_Cat """
+    """ON Products.id=Prod_in_Cat.product_id """
+    """WHERE Prod_in_Cat.category_id={}""")
 
-sql['subst'] = (
-    """SELECT * FROM Products """
-    """WHERE category_id = {} """
-    """ORDER BY nutrition_grades""")
+sql['subst'] = sql['displayByCat'] + """ ORDER BY nutrition_grades"""
 
 sql['prod'] = """SELECT * FROM Products WHERE id = {}"""
 
@@ -153,7 +157,7 @@ text['subsChoice'] = [
 ]
 text['subsDetails'] = [
     [], {
-        'text': '',
+        'text': '777 to go back, enter to save substitute',
         'title': ''
     }
 ]

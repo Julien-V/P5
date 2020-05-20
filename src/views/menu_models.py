@@ -106,7 +106,10 @@ class PrintLineDB():
         self.gen()
 
     def process_kwargs(self):
-        pass
+        """This method processes optionals parameters in self.kwargs"""
+        keys = self.kwargs.keys()
+        if 'text' in keys:
+            self.text = self.kwargs['text']
 
     def comp(self):
         """This method adds to queue the details of a product and
@@ -177,6 +180,8 @@ class PrintLineDB():
                 end = self.colors['endc']
                 txt = f"{end}{g}{key} :{end} {val}{end}"
                 self.queue.append(menuC.PrintLine(txt))
+        # Input:
+        self.promptObject = menuC.Prompt(self.text)
 
     def get(self):
         """This method prints the result of get() method in each
@@ -194,4 +199,4 @@ class PrintLineDB():
         for elem in self.queue:
             for line in elem.get():
                 print(line)
-        return input('') or "0"
+        return self.promptObject.get() or "0"
