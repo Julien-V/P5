@@ -268,6 +268,7 @@ class App():
                         elif nextKey == 'end':
                             self.cwp = self.step.copy()
                             self.cws = None
+                            self.result = list()
                             self.oldPath = list()
                             oldRep = list()
                         elif nextKey == 'subsChoice':
