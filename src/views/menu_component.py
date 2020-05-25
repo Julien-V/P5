@@ -16,9 +16,9 @@ class Title(menu.MenuItem):
         end = self.colors["endc"]
         # \n self.text \n
         self.result = [
-            f"\n",
+            "\n",
             f"{B}{self.text}{end}",
-            f"\n"
+            "\n"
             ]
 
     def get(self):
@@ -64,16 +64,16 @@ class PrintList(menu.MenuItem):
         self.page = 0
         self.gen()
 
-    def linesLengthCheck(self):
+    def lines_length_check(self):
         """This method adds extra spaces to all element
         .center() is sensible to the length of a str
         """
         # we want a nicely displayed list
-        lineSize = max([len(x) for x in self.result])
+        line_size = max([len(x) for x in self.result])
         temp = []
         for line in self.result:
-            if len(line) < lineSize:
-                line += " "*(lineSize-len(line))
+            if len(line) < line_size:
+                line += " "*(line_size-len(line))
             temp.append(line)
         self.result = temp
         self.result.append("\n\n")
@@ -109,9 +109,9 @@ class PrintList(menu.MenuItem):
         temp = [r[i:i+lim] for i in range(0, len(r), lim)]
         self.pages = temp
         self.result = temp[self.page]
-        self.linesLengthCheck()
+        self.lines_length_check()
 
-    def genNextPage(self):
+    def gen_next_page(self):
         """This method displays the next page of the list
         .. note: method unused
         """

@@ -15,11 +15,11 @@ class Category():
         """
         self.name = name
         self.cursor = model
-        self.prodList = []
+        self.prod_list = []
 
-    def addProduct(self, product):
-        """This method adds a product in self.prodList"""
-        self.prodList.append(product)
+    def add_product(self, product):
+        """This method adds a product in self.prod_list"""
+        self.prod_list.append(product)
 
     def _validate(self):
         """This method checks category's type

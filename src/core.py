@@ -2,7 +2,7 @@
 # coding : utf-8
 
 
-import initDB
+import init_db
 
 from src.models import db
 from src.models import config as cfg
@@ -31,23 +31,23 @@ class App():
         self.item = dict()
         self.cat_id = None
         self.prod = None
-        self.prodS = None
+        self.prod_s = None
         # Step
-        self.step = cfg.stepApp.copy()
+        self.step = cfg.step_app.copy()
         self.cwp = self.step
         self.cws = None
-        self.oldPath = list()
+        self.old_path = list()
         # DB
         # while not self.db ?
-        self.loadDB()
+        self.load_db()
 
-    def loadDB(self):
+    def load_db(self):
         """Load db.DB() class and execute a query to test
         the presence of rows in database
-        (if not, core.App.firstRun() is called)
+        (if not, core.App.first_run() is called)
         """
         self.db = db.DB()
-        self.cursor = self.db.getCursor()
+        self.cursor = self.db.get_cursor()
         # select * from Categories;
         query = self.sql['test']
         self.cursor.execute(query)
@@ -55,21 +55,21 @@ class App():
         # if Categories return empty set:
         if not result:
             self.first = True
-            self.firstRun()
+            self.first_run()
         else:
             self.first = False
 
-    def firstRun(self):
+    def first_run(self):
         """Create a Populate object for each category
             in src.models.config.cat to get products and insert them in db
         """
         for cat_id, category in enumerate(cfg.cat):
             param = cfg.param.copy()
             param['tag_0'] = category
-            pop = initDB.Populate(param, self.cursor, cat_id+1)
+            pop = init_db.Populate(param, self.cursor, cat_id+1)
             pop.run()
 
-    def displayView(self, view, ctrl, args, r):
+    def display_view(self, view, ctrl, args, r):
         """This method chooses which view is given by the current step
         then create this view with appropriate controller
         :param view: a view (src.views.menu_models)
@@ -80,25 +80,25 @@ class App():
         if view == cfg.choice:
             self.view = view(args[0], **args[1])
             self.ctrl = ctrl(self.view, self.cursor)
-            rep = self.ctrl.choiceMenu(self.debug)
-        elif view == cfg.printLine and self.result:
+            rep = self.ctrl.choice_menu(self.debug)
+        elif view == cfg.print_line and self.result:
             if r >= len(self.result):
                 val = self.result[0]
             else:
                 val = self.result[r]
             self.view = view(val, **args[1])
             self.ctrl = ctrl(self.view, self.cursor)
-            rep = self.ctrl.printLineDB(self.debug)
+            rep = self.ctrl.print_line_db(self.debug)
             if not self.view.substitute and rep not in [777, 999]:
                 rep = r
         else:
             rep = 777
         return rep
 
-    def formatDisplay(self, formattingRules):
+    def format_display(self, formatting_rules):
         """format result following the list of formatting rules
         of the current step (lamda function)
-        :param formattingRules: list of lambda functions
+        :param formatting_rules: list of lambda functions
         :return formatted: result (list) formatted
         >>> app.result
         ["test"]
@@ -106,13 +106,13 @@ class App():
             (lambda i: "[*]" + i,
             (lambda i: i + ".")
             ]
-        >>> app.formatDisplay(fRules)
+        >>> app.format_display(fRules)
         "[*] test."
         """
         formatted = []
         for elem in self.result:
             r = elem
-            for rule in formattingRules:
+            for rule in formatting_rules:
                 r = rule(r)
             formatted.append(r)
         return formatted
@@ -132,28 +132,28 @@ class App():
             self.cursor.execute(q)
         return self.cursor.fetchall()
 
-    def processResult(self, processRules):
+    def process_result(self, process_rules):
         """This method processes the result of the query following the list
         of proccessing rules of the current step
-        :param processRules: list of lambda functions
+        :param process_rules: list of lambda functions
         :return: return processed data
         """
         p = self
-        for rule in processRules:
+        for rule in process_rules:
             p = rule(p)
         return p
 
-    def updateProd(self):
+    def update_prod(self):
         """This methode updates a product by adding a substitute_id"""
-        if self.product and self.prodS:
-            subs = self.prodS
+        if self.product and self.prod_s:
+            subs = self.prod_s
             prod = self.product
-            prodObj = product.Product(self.cursor, prod['category_id'])
+            prod_obj = product.Product(self.cursor, prod['category_id'])
             update = {'substitute_id': subs['id']}
-            prodObj.get_validate_insert(prod, update)
+            prod_obj.get_validate_insert(prod, update)
         else:
             if self.debug:
-                print(f'prod/prodS not loaded : {self.prod}//{self.prodS}')
+                print(f'prod/prod_s not loaded : {self.prod}//{self.prod_s}')
 
     def run(self):
         """This method handles steps organization by :
@@ -165,27 +165,27 @@ class App():
         print('core.App running')
         self.running = True
         rep = 0
-        oldRep = list()
+        old_rep = list()
         previous = False
         while self.running:
-            resultFormatted = []
+            result_formatted = []
             if previous:
                 previous = False
-                if oldRep:
-                    rep = oldRep.pop()
+                if old_rep:
+                    rep = old_rep.pop()
                 else:
                     rep = 0
-            exitRequested = False
+            exit_requested = False
 
             # param = [view, controller, [list, kwargs]]
             if 'param' not in self.cwp.keys():
-                self.cwpIsChoosePath = False
+                self.cwp_is_intersection = False
                 if self.cws is None:
                     key = list(self.cwp.keys())[0]
                     self.cws = key
                 param = self.cwp[self.cws].copy()
             else:
-                self.cwpIsChoosePath = True
+                self.cwp_is_intersection = True
                 self.cws = None
                 param = self.cwp['param'].copy()
 
@@ -194,42 +194,42 @@ class App():
             if param[2]:
                 args = param[2].copy()
             if len(param) == 4:
-                paramExt = param[3]
+                param_ext = param[3]
             else:
-                paramExt = dict()
+                param_ext = dict()
 
             if self.debug:
                 print(f"cws: {self.cws}")
                 print(f"param: {param}")
-                print(f"len(oldPath): {len(self.oldPath)}")
-                print(f"oldRep: {oldRep}")
+                print(f"len(old_path): {len(self.old_path)}")
+                print(f"old_rep: {old_rep}")
                 print(f"rep: {rep}")
 
             # query
-            if 'query' in paramExt.keys():
+            if 'query' in param_ext.keys():
                 if self.result:
                     self.item = self.result[rep]
                 else:
                     self.item = self.item
-                if '4query' in paramExt.keys():
+                if '4query' in param_ext.keys():
                     print(self.item.keys())
-                    forQuery = paramExt['4query']
-                    if forQuery in self.item.keys():
-                        rep = self.item[forQuery]-1
-                self.result = self.query(paramExt['query'], rep)
+                    for_query = param_ext['4query']
+                    if for_query in self.item.keys():
+                        rep = self.item[for_query]-1
+                self.result = self.query(param_ext['query'], rep)
                 #   process
-                if 'process' in paramExt.keys():
-                    self.result = self.processResult(paramExt['process'])
+                if 'process' in param_ext.keys():
+                    self.result = self.process_result(param_ext['process'])
             #   format choice list
-            if 'format' in paramExt.keys() and self.result:
-                resultFormatted = self.formatDisplay(paramExt['format'])
-                args[0] = resultFormatted
+            if 'format' in param_ext.keys() and self.result:
+                result_formatted = self.format_display(param_ext['format'])
+                args[0] = result_formatted
 
             if self.debug:
                 print(f"len(result): {len(self.result)}")
             #   display choice list
             if view and ctrl and args:
-                rep = self.displayView(view, ctrl, args, rep)
+                rep = self.display_view(view, ctrl, args, rep)
             else:
                 rep = None
 
@@ -238,43 +238,43 @@ class App():
                 if rep == int(cfg.back):
                     previous = True
                 else:
-                    exitRequested = True
+                    exit_requested = True
             else:
                 pass
             # changing view
 
-            if self.cwpIsChoosePath and not exitRequested:
-                if previous and self.oldPath:
-                    self.cwp = self.oldPath.pop()
+            if self.cwp_is_intersection and not exit_requested:
+                if previous and self.old_path:
+                    self.cwp = self.old_path.pop()
                 elif not previous:
-                    selectedKey = list(self.cwp.keys())[rep]
-                    self.oldPath.append(self.cwp)
-                    self.cwp = self.cwp[selectedKey]
-                    oldRep.append(rep)
-            elif not self.cwpIsChoosePath and not exitRequested:
+                    selected_key = list(self.cwp.keys())[rep]
+                    self.old_path.append(self.cwp)
+                    self.cwp = self.cwp[selected_key]
+                    old_rep.append(rep)
+            elif not self.cwp_is_intersection and not exit_requested:
                 keys = list(self.cwp.keys())
                 if self.cws in keys:
-                    indexKey = keys.index(self.cws)
-                    if indexKey > 0 and previous:
-                        previousKey = keys[indexKey-1]
+                    index_key = keys.index(self.cws)
+                    if index_key > 0 and previous:
+                        previousKey = keys[index_key-1]
                         self.cws = previousKey
-                    elif indexKey == 0 and previous:
-                        self.cwp = self.oldPath.pop()
-                    elif indexKey < len(keys)-1 and not previous:
-                        oldRep.append(rep)
-                        nextKey = keys[indexKey+1]
-                        self.cws = nextKey
-                        if nextKey == 'prodUpdate':
-                            self.prodS = self.result[rep]
-                            self.updateProd()
-                        elif nextKey == 'end':
+                    elif index_key == 0 and previous:
+                        self.cwp = self.old_path.pop()
+                    elif index_key < len(keys)-1 and not previous:
+                        old_rep.append(rep)
+                        next_key = keys[index_key+1]
+                        self.cws = next_key
+                        if next_key == 'prod_update':
+                            self.prod_s = self.result[rep]
+                            self.update_prod()
+                        elif next_key == 'end':
                             self.cwp = self.step.copy()
                             self.cws = None
                             self.result = list()
-                            self.oldPath = list()
-                            oldRep = list()
-                        elif nextKey == 'subsChoice':
+                            self.old_path = list()
+                            old_rep = list()
+                        elif next_key == 'subs_choice':
                             self.product = self.result[rep]
-            elif exitRequested:
+            elif exit_requested:
                 self.running = False
                 print('Bye')

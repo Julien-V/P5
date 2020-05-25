@@ -22,62 +22,62 @@ class Populate():
         self.name = param["tag_0"]
         self.param = param
         self.db = db
-        self.catId = cat_id
+        self.cat_id = cat_id
         self.url = cfg.url
         self.headers = cfg.headers
         self.count = 0
-        self.resultList = []
+        self.result_list = []
 
-    def createURL(self):
+    def create_url(self):
         """This method adds self.param keys and values to self.param"""
         for key in self.param:
             self.url += f"{key}={self.param[key]}"
             self.url += "&"
         self.url = self.url[:-1]
 
-    def getAndLoad(self):
+    def get_and_load(self):
         """This method does the request and decode returned JSON
         :return: JSON decoded by json.loads()"""
         r = requests.get(self.url, headers=self.headers)
         result = json.loads(r.text)
         return result
 
-    def keepOnlyProductsWithNutritionGrades(self):
+    def keep_nutri_g_only(self):
         """This method keeps only products with nutrition grades"""
-        prodList = self.resultList
-        temp = [x for x in prodList if "nutrition_grades" in x.keys()]
-        self.resultList = temp
+        prod_list = self.result_list
+        temp = [x for x in prod_list if "nutrition_grades" in x.keys()]
+        self.result_list = temp
 
     def insert(self):
         """This method inserts current category and its products in database"""
-        if not self.resultList:
+        if not self.result_list:
             print("resultList empty")
             return
         catObj = category.Category(self.name, self.db)
         catObj.insert()
-        print("lastrowid ", self.catId)
-        for prod in self.resultList:
-            prodObj = product.Product(self.db, self.catId)
+        print("lastrowid ", self.cat_id)
+        for prod in self.result_list:
+            prodObj = product.Product(self.db, self.cat_id)
             prodObj.get_validate_insert(prod)
 
     def run(self):
-        self.createURL()
-        result = self.getAndLoad()
+        self.create_url()
+        result = self.get_and_load()
         if "count" in result.keys():
             self.count = int(result["count"])
             if "products" in result.keys():
-                self.resultList += result["products"]
-                while self.count < len(self.resultList):
+                self.result_list += result["products"]
+                while self.count < len(self.result_list):
                     self.param["page"] = int(self.param["page"])+1
-                    self.createURL()
-                    result = self.getAndLoad()
+                    self.create_url()
+                    result = self.get_and_load()
                     if "products" in result.keys():
-                        self.resultList += result["products"]
+                        self.result_list += result["products"]
                     else:
                         break
-        print(len(self.resultList))
-        self.keepOnlyProductsWithNutritionGrades()
-        print(len(self.resultList))
+        print(len(self.result_list))
+        self.keep_nutri_g_only()
+        print(len(self.result_list))
         self.insert()
         return
 

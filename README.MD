@@ -50,7 +50,7 @@ Le terminal affiche les choix suivants :
 
 Appelle la méthode core.App.run()
 
-`initDB.Populate`
+`init_db.Populate`
 
 Récupère les produits d'une catégorie via l'API d'Open Food Facts et les insères dans la base de données
 

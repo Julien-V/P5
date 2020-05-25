@@ -3,7 +3,7 @@
 
 import os
 import getpass
-import mysql.connector as mysqlC
+import mysql.connector as mysql_c
 # from mysql.connector import errorcode
 
 from src.models import config as cfg
@@ -15,9 +15,9 @@ class DB():
         """This method initializes the class and call self.connect()"""
         self.name = cfg.db["name"]
         self.user = cfg.db['connect']['user']
-        self.sqlFileName = cfg.db["create_file_name"]
-        self.sqlFilePath = cfg.db["create_file_path"]
-        self.dictResult = False
+        self.sql_filename = cfg.db["create_file_name"]
+        self.sql_filepath = cfg.db["create_file_path"]
+        self.dict_result = False
         self.exist = False
         self.connect()
 
@@ -26,10 +26,10 @@ class DB():
         and use it
         """
         try:
-            self.cnx = mysqlC.connect(
+            self.cnx = mysql_c.connect(
                 user=self.user,
                 password=getpass.getpass())
-        except mysqlC.error as e:
+        except mysql_c.error as e:
             if e.errno in cfg.db["error"].keys():
                 print(cfg.db["error"][e.errno])
             else:
@@ -47,27 +47,27 @@ class DB():
         """This method is called by connect()
         and create database with a *.sql file
         """
-        dirs = os.listdir(self.sqlFilePath)
-        if self.sqlFileName not in dirs:
-            print(self.sqlFileName, " not found")
+        dirs = os.listdir(self.sql_filepath)
+        if self.sql_filename not in dirs:
+            print(self.sql_filename, " not found")
             return
-        path = os.path.join(self.sqlFilePath, self.sqlFileName)
-        with open(path, "r") as fileA:
-            queries = fileA.read().split(";")
+        path = os.path.join(self.sql_filepath, self.sql_filename)
+        with open(path, "r") as file_a:
+            queries = file_a.read().split(";")
         for query in queries:
             try:
                 self.cursor.execute(query)
-            except mysqlC.error as e:
+            except mysql_c.error as e:
                 print(e)
                 print(query)
 
-    def getCursor(self):
+    def get_cursor(self):
         """This method returns a cursor to execute queries"""
         # result will always be returned as a dict
-        if not self.dictResult:
+        if not self.dict_result:
             self.cursor.close()
             self.cursor = self.cnx.cursor(dictionary=True)
-            self.dictResult = True
+            self.dict_result = True
         return self.cursor
 
     def save(self):

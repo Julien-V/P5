@@ -76,7 +76,7 @@ sql["insert_prod"] = (
     """%s, %s, """
     """%s, %s, %s)""")
 
-sql['prodUpdate'] = (
+sql['prod_update'] = (
     """UPDATE Products """
     """SET substitute_id = %s, """
     """updated_timestamp = %s """
@@ -131,40 +131,40 @@ text['start'] = [
         'title': title
     }]
 # Substitute text
-text['catChoice'] = [
+text['cat_choice'] = [
     cat, {
         'text': 'Catégorie',
         'title': 'Choix de la catégorie'
     }
 ]
-text['prodChoice'] = [
+text['prod_choice'] = [
     [], {
         'text': 'Produit',
         'title': 'Choix du produit'
     }
 ]
-text['prodDetails'] = [
+text['prod_details'] = [
     [], {
         'text': '',
         'title': ''
     }
 ]
-text['subsChoice'] = [
+text['subs_choice'] = [
     [], {
         'text': 'Substitution',
         'title': 'Choix du produit à substituer'
     }
 ]
-text['subsDetails'] = [
+text['subs_details'] = [
     [], {
         'text': '777 to go back, enter to save substitute',
         'title': ''
     }
 ]
 # Display subs text
-allS = "Tout mes produits substitués"
+all_s = "Tout mes produits substitués"
 text['display'] = [
-    ["Par catégorie", allS], {
+    ["Par catégorie", all_s], {
         'text': 'Afficher',
         'title': 'Afficher'
     }
@@ -175,7 +175,7 @@ text['displayByCat'] = [
         'title': "Afficher par catégorie"
     }
 ]
-text['dispChoice'] = [
+text['disp_choice'] = [
     [], {
         'text': "Produit"
     }
@@ -191,12 +191,12 @@ text['dispChoice'] = [
 # ]
 
 paramExt = dict()
-# catChoice
-paramExtCC = {
+# cat_choice
+param_ext_cc = {
     'query': sql['test']
 }
-# prodChoice
-paramExtPC = {
+# prod_choice
+param_ext_pc = {
     '4query': 'category_id',
     'query': sql['displayByCat'],
     'format': [
@@ -204,12 +204,12 @@ paramExtPC = {
         lambda i: f"{i[1]} // {i[0]['nutrition_grades']}"
     ]
 }
-# prodDetails
+# prod_details
 nG = 'nutrition_grades'
 
 
 # substChoice
-paramExtSC = {
+param_ext_sc = {
     '4query': 'category_id',
     'query': sql['subst'],
     'process': [lambda i: [x for x in i.result if x[nG] < i.item[nG]]],
@@ -219,7 +219,7 @@ paramExtSC = {
     ],
 }
 # display
-paramExtDC = {
+param_ext_dc = {
     'query': sql['displayAll'],
     'process': [
         lambda i: [
@@ -253,31 +253,31 @@ var = [view, controller, args, paramExt]
 """
 
 choice = mm.ChoiceList
-printLine = mm.PrintLineDB
+print_line = mm.PrintLineDB
 ctrller = ctrl.Controller
 
-catChoice = [choice, ctrller, text['catChoice'], paramExtCC]
-prodChoice = [choice, ctrller, text['prodChoice'], paramExtPC]
-prodDetails = [printLine, ctrller, text['prodDetails']]
-# subsChoice = [choice, ctrller, text['subsChoice'], paramExtSC]
-subsProp = [printLine, ctrller, text['subsDetails'], paramExtSC]
+cat_choice = [choice, ctrller, text['cat_choice'], param_ext_cc]
+prod_choice = [choice, ctrller, text['prod_choice'], param_ext_pc]
+prod_details = [print_line, ctrller, text['prod_details']]
+# subs_choice = [choice, ctrller, text['subs_choice'], param_ext_sc]
+subs_prop = [print_line, ctrller, text['subs_details'], param_ext_sc]
 end = [None, None, None]  # the end
 
-dispChoice = [choice, ctrller, text['dispChoice'], paramExtDC]
+disp_choice = [choice, ctrller, text['disp_choice'], param_ext_dc]
 
 # Substitute
-stepSub = {
-    'catChoice': catChoice,
-    'prodChoice': prodChoice,
-    'subsChoice': subsProp,
-    'prodUpdate': end,
+step_sub = {
+    'cat_choice': cat_choice,
+    'prod_choice': prod_choice,
+    'subs_choice': subs_prop,
+    'prod_update': end,
     'end': end
 }
 
 # Display
-stepDispAll = {
-    'dispChoice': dispChoice,
-    'prodDetails': prodDetails,
+step_disp_all = {
+    'disp_choice': disp_choice,
+    'prod_details': prod_details,
     'end': end
 }
 
@@ -286,8 +286,8 @@ stepDispAll = {
 'param': [view, controller, args]
 with args = [listValues, **kwargs]
 """
-stepApp = {
-    'substitute': stepSub,
-    'display': stepDispAll,
+step_app = {
+    'substitute': step_sub,
+    'display': step_disp_all,
     'param': [choice, ctrller, text['start']]
 }

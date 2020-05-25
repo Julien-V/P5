@@ -41,7 +41,7 @@ class Product():
         if test and not update:
             self._insert()
         elif test and update:
-            update['substituedID'] = prod['id']
+            update['substitued_id'] = prod['id']
             self._update(update)
 
     def _validate_product_spec(self):
@@ -90,10 +90,10 @@ class Product():
         """
         ts = int(datetime.now().timestamp())
         # sql = UPDATE Products SET {} = {}, {}, {} WHERE id= {}
-        sql = cfg.sql['prodUpdate']
+        sql = cfg.sql['prod_update']
         key = 'substitute_id'
         sql_args = (
             update[key],
             ts,
-            update['substituedID'])
+            update['substitued_id'])
         self.cursor.execute(sql, sql_args)

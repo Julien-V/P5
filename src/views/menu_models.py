@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # coding : utf-8
 
-from src.views import menu_component as menuC
+from src.views import menu_component as menu_c
 
 
 class ChoiceList():
@@ -23,11 +23,11 @@ class ChoiceList():
         else:
             self.kwargs = False
         self.text = ''
-        self.resizedResult = None
-        self.dispOrder = [
-            menuC.Title,
-            menuC.PrintList,
-            menuC.PrintLine,
+        self.resized_result = None
+        self.disp_order = [
+            menu_c.Title,
+            menu_c.PrintList,
+            menu_c.PrintLine,
         ]
         self.gen()
 
@@ -36,12 +36,12 @@ class ChoiceList():
         keys = self.kwargs.keys()
         if 'lines' in keys:
             for line in self.kwargs['lines']:
-                printLineObject = menuC.PrintLine(line)
-                self.queue.append(printLineObject)
+                print_line_obj = menu_c.PrintLine(line)
+                self.queue.append(print_line_obj)
         if 'title' in keys:
             title = self.kwargs['title']
-            titleObject = menuC.Title(title)
-            self.queue.append(titleObject)
+            title_obj = menu_c.Title(title)
+            self.queue.append(title_obj)
         if 'text' in keys:
             self.text = self.kwargs['text']
 
@@ -50,19 +50,19 @@ class ChoiceList():
         add them to queue (list)
         """
         self.queue = []
-        printListObject = menuC.PrintList(self.values)
-        self.resizedResult = printListObject.result
-        self.queue.append(printListObject)
+        print_list_obj = menu_c.PrintList(self.values)
+        self.resized_result = print_list_obj.result
+        self.queue.append(print_list_obj)
         if self.kwargs:
             self.process_kwargs()
         temp = []
-        for obj in self.dispOrder:
+        for obj in self.disp_order:
             for elem in self.queue:
                 if isinstance(elem, obj):
                     temp.append(elem)
         self.queue = temp
         # Input:
-        self.promptObject = menuC.Prompt(self.text)
+        self.prompt_obj = menu_c.Prompt(self.text)
 
     def get(self):
         """This method prints the result of get() method in each
@@ -72,7 +72,7 @@ class ChoiceList():
         for elem in self.queue:
             for line in elem.get():
                 print(line)
-        return self.promptObject.get()
+        return self.prompt_obj.get()
 
 
 class PrintLineDB():
@@ -95,12 +95,12 @@ class PrintLineDB():
             self.kwargs = False
         self.text = ''
         self.prod, self.substitute = dict(), dict()
-        self.dispOrder = [
-            menuC.Title,
-            menuC.PrintLine
+        self.disp_order = [
+            menu_c.Title,
+            menu_c.PrintLine
         ]
         # Get terminal size
-        init_geom = menuC.PrintLine(' ')
+        init_geom = menu_c.PrintLine(' ')
         self.col = init_geom.col
         self.colors = init_geom.colors
         self.gen()
@@ -119,41 +119,43 @@ class PrintLineDB():
         B = self.colors['bold']
         end = self.colors['endc']
         for key in self.prod.keys():
-            sizeKey = len(key)+6  # something like ' [ key ] '
+            size_key = len(key)+6  # something like ' [ key ] '
             val = str(self.prod[key])
-            prodSize = len(val)
-            maxSize = int((self.col/2)-(sizeKey/2)-3)
+            prod_size = len(val)
+            max_size = int((self.col/2)-(size_key/2)-3)
             if key in self.substitute:
-                valS = str(self.substitute[key])
-                subsSize = len(valS)
+                val_s = str(self.substitute[key])
+                subs_size = len(val_s)
             else:
-                valS = list()
-                subsSize = 0
-            pLines = [val[i:i+maxSize] for i in range(0, prodSize, maxSize)]
-            sLines = [valS[i:i+maxSize] for i in range(0, subsSize, maxSize)]
-            (pl, sl) = (len(pLines), len(sLines))
+                val_s = list()
+                subs_size = 0
+            range_p_lines = range(0, prod_size, max_size)
+            range_s_lines = range(0, subs_size, max_size)
+            p_lines = [val[i:i+max_size] for i in range_p_lines]
+            s_lines = [val_s[i:i+max_size] for i in range_s_lines]
+            (pl, sl) = (len(p_lines), len(s_lines))
             # key on top
-            side = " "*maxSize
+            side = " "*max_size
             txt = f"{end}{side} {b}{B}[ {key} ]{end} {side}"
-            lineObj = menuC.PrintLine(txt)
-            self.queue.append(lineObj)
-            maxSize = int((self.col/2)-(len('   ||   ')/2)-3)
+            line_obj = menu_c.PrintLine(txt)
+            self.queue.append(line_obj)
+            max_size = int((self.col/2)-(len('   ||   ')/2)-3)
             if pl > sl:
                 for i in range(0, pl-sl):
-                    sLines.append("")
+                    s_lines.append("")
             elif pl < sl:
                 for i in range(0, sl-pl):
-                    pLines.append("")
-            for i, elem in enumerate(pLines):
-                left = (maxSize-len(elem))*" "
-                s = sLines[i]
-                right = " "*(maxSize-len(s))
+                    p_lines.append("")
+            for i, elem in enumerate(p_lines):
+                left = (max_size-len(elem))*" "
+                s = s_lines[i]
+                right = " "*(max_size-len(s))
                 txt = (
                     f"{end}{left}{elem}   "
                     f"{B}{'||'}{end}   {s}{right}")
-                lineObj = menuC.PrintLine(txt)
-                self.queue.append(lineObj)
-            sep = menuC.PrintLine("-"*(self.col-4))
+                line_obj = menu_c.PrintLine(txt)
+                self.queue.append(line_obj)
+            sep = menu_c.PrintLine("-"*(self.col-4))
             self.queue.append(sep)
 
     def gen(self):
@@ -179,9 +181,9 @@ class PrintLineDB():
                 g = self.colors['green']
                 end = self.colors['endc']
                 txt = f"{end}{g}{key} :{end} {val}{end}"
-                self.queue.append(menuC.PrintLine(txt))
+                self.queue.append(menu_c.PrintLine(txt))
         # Input:
-        self.promptObject = menuC.Prompt(self.text)
+        self.prompt_obj = menu_c.Prompt(self.text)
 
     def get(self):
         """This method prints the result of get() method in each
@@ -190,7 +192,7 @@ class PrintLineDB():
         """
         # sorting
         temp = list()
-        for obj in self.dispOrder:
+        for obj in self.disp_order:
             for elem in self.queue:
                 if isinstance(elem, obj):
                     temp.append(elem)
@@ -199,4 +201,4 @@ class PrintLineDB():
         for elem in self.queue:
             for line in elem.get():
                 print(line)
-        return self.promptObject.get() or "0"
+        return self.prompt_obj.get() or "0"

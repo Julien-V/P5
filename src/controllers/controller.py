@@ -19,7 +19,7 @@ class Controller():
         """This method clears the screen"""
         os.system('clear')
 
-    def choiceMenu(self, debug=False):
+    def choice_menu(self, debug=False):
         """This method controls the choice of an element in a list
         :param debug: debug set by default to False
         :return: int of user's anwser
@@ -29,22 +29,22 @@ class Controller():
             if not debug:
                 self._clear()
             rep = self.view.get()
-            choiceList = self.view.resizedResult.copy()
+            choice_list = self.view.resized_result.copy()
             # get rid of \n
-            choiceList.remove(choiceList[0])
-            choiceList.remove(choiceList[-1])
+            choice_list.remove(choice_list[0])
+            choice_list.remove(choice_list[-1])
             if rep == cfg.back or rep == cfg.exit:
                 valid = True
             else:
                 try:
-                    choiceList[int(rep)]
+                    choice_list[int(rep)]
                     valid = True
                 except Exception as e:
                     print(e)
                     valid = False
         return int(rep)
 
-    def printLineDB(self, debug=False):
+    def print_line_db(self, debug=False):
         """This method controls user's anwser
         :param debug: debug set by default to False
         :return: int of user's anwser
@@ -58,7 +58,7 @@ class Controller():
                 valid = True
             else:
                 try:
-                    r = int(rep)
+                    rep = int(rep)
                     valid = True
                 except Exception as e:
                     print(e)
