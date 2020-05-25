@@ -37,9 +37,9 @@ class Category():
         if not valid:
             return
         sql = cfg.sql['insert_cat']
-        sql = sql.format(self.name)
+        sql_args = (self.name,)
         try:
-            self.cursor.execute(sql)
+            self.cursor.execute(sql, sql_args)
         except Exception as e:
             print(e)
             return

@@ -40,6 +40,7 @@ class DB():
         databases = [elem[0] for elem in self.cursor.fetchall()]
         if self.name not in databases:
             self.create()
+        # parameter insertion doesn't seem to work with database name
         self.cursor.execute("USE {}".format(self.name))
 
     def create(self):

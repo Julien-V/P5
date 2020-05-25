@@ -123,11 +123,13 @@ class App():
         :param rep: anwser of the previous step, set by default to None
         :return: result of the query
         """
-        if isinstance(rep, int):
-            q = query.format(rep+1)
+        if isinstance(rep, int) and "%s" in query:
+            q = query
+            q_args = (rep+1,)
+            self.cursor.execute(q, q_args)
         else:
             q = query
-        self.cursor.execute(q)
+            self.cursor.execute(q)
         return self.cursor.fetchall()
 
     def processResult(self, processRules):

@@ -70,16 +70,16 @@ class Product():
         """This method inserts the product into database"""
         s = self.spec
         sql = cfg.sql['insert_prod']
-        sql = sql.format(
+        sql_args = (
             s['product_name'], s['brands'], s['code'],
             s['categories'], s['nutrition_grades'],
             s['stores'], s['url'], s['added_timestamp']
             )
         sql2 = cfg.sql['insert_PiC']
         try:
-            self.cursor.execute(sql)
-            sql2 = sql2.format(self.cat_id, self.cursor.lastrowid)
-            self.cursor.execute(sql2)
+            self.cursor.execute(sql, sql_args)
+            sql2_args = (self.cat_id, self.cursor.lastrowid)
+            self.cursor.execute(sql2, sql2_args)
         except Exception as e:
             print(e)
             return
@@ -92,10 +92,8 @@ class Product():
         # sql = UPDATE Products SET {} = {}, {}, {} WHERE id= {}
         sql = cfg.sql['prodUpdate']
         key = 'substitute_id'
-        sql = sql.format(
-            key,
+        sql_args = (
             update[key],
-            'updated_timestamp',
             ts,
             update['substituedID'])
-        self.cursor.execute(sql)
+        self.cursor.execute(sql, sql_args)
