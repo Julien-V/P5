@@ -53,12 +53,12 @@ class Populate():
         if not self.result_list:
             print("resultList empty")
             return
-        catObj = category.Category(self.name, self.db)
-        catObj.insert()
+        cat_obj = category.Category(self.name, self.db)
+        cat_obj.insert()
         print("lastrowid ", self.cat_id)
         for prod in self.result_list:
-            prodObj = product.Product(self.db, self.cat_id)
-            prodObj.get_validate_insert(prod)
+            prod_obj = product.Product(self.db, self.cat_id)
+            prod_obj.get_validate_insert(prod)
 
     def run(self):
         self.create_url()
