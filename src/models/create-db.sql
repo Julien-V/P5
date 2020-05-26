@@ -5,7 +5,7 @@ CREATE TABLE Categories (
     category_name varchar(500) NOT NULL,
     UNIQUE (category_name),
     PRIMARY KEY (id)
-) ENGINE=InnoDB;
+);
 CREATE TABLE Products(
 	id int AUTO_INCREMENT NOT NULL,
 	product_name text NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE Products(
 		ON DELETE SET NULL,
 	UNIQUE (code),
 	PRIMARY KEY (id)
-) ENGINE=InnoDB;
+);
 CREATE TABLE Prod_in_Cat(
 	category_id int NOT NULL,
 	product_id int NOT NULL,
@@ -34,4 +34,4 @@ CREATE TABLE Prod_in_Cat(
 		FOREIGN KEY (product_id) REFERENCES Products(id)
 		ON DELETE CASCADE,
 	PRIMARY KEY (category_id, product_id)
-) ENGINE=InnoDB;
+);
