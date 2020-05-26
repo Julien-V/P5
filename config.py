@@ -3,6 +3,7 @@
 
 import getpass
 
+from openff.models import req_sql
 # from openff.views import menu
 from openff.views import menu_models as mm
 
@@ -53,50 +54,6 @@ db["Uerror"] = "Unknown Error : \n {}"
 
 db["show"] = "SHOW DATABASES"
 
-# SQL
-#########################
-
-sql = dict()
-sql["test"] = "SELECT * from Categories"
-
-sql["insert_cat"] = (
-    """INSERT INTO Categories """
-    """(category_name) VALUES (%s)""")
-
-sql["insert_PiC"] = (
-    """INSERT INTO Prod_in_Cat """
-    """(category_id, product_id) VALUES (%s, %s)""")
-
-sql["insert_prod"] = (
-    """INSERT INTO Products """
-    """(product_name, brands, code, """
-    """categories, nutrition_grades, """
-    """stores, url, added_timestamp) """
-    """VALUES (%s, %s, %s, """
-    """%s, %s, """
-    """%s, %s, %s)""")
-
-sql['prod_update'] = (
-    """UPDATE Products """
-    """SET substitute_id = %s, """
-    """updated_timestamp = %s """
-    """WHERE id = %s""")
-
-# SQL Subs Menu
-sql['displayByCat'] = (
-    """SELECT * FROM Products LEFT JOIN Prod_in_Cat """
-    """ON Products.id=Prod_in_Cat.product_id """
-    """WHERE Prod_in_Cat.category_id=%s""")
-
-sql['subst'] = sql['displayByCat'] + """ ORDER BY nutrition_grades"""
-
-sql['prod'] = """SELECT * FROM Products WHERE id = %s"""
-
-# SQL Disp Menu
-sql['displayAll'] = (
-    """SELECT * FROM Products WHERE substitute_id IS NOT NULL""")
-
-sql['disp'] = sql['displayAll']
 
 # Requests
 #########################
@@ -193,12 +150,12 @@ text['disp_choice'] = [
 paramExt = dict()
 # cat_choice
 param_ext_cc = {
-    'query': sql['test']
+    'query': req_sql.sql['test']
 }
 # prod_choice
 param_ext_pc = {
     '4query': 'category_id',
-    'query': sql['displayByCat'],
+    'query': req_sql.sql['displayByCat'],
     'format': [
         lambda i: [i, f"{i['product_name']} // {i['brands']}"],
         lambda i: f"{i[1]} // {i[0]['nutrition_grades']}"
@@ -211,7 +168,7 @@ nG = 'nutrition_grades'
 # substChoice
 param_ext_sc = {
     '4query': 'category_id',
-    'query': sql['subst'],
+    'query': req_sql.sql['subst'],
     'process': [lambda i: [x for x in i.result if x[nG] < i.item[nG]]],
     'format': [
         lambda i: [i, f"{i['product_name']}"],
@@ -220,11 +177,11 @@ param_ext_sc = {
 }
 # display
 param_ext_dc = {
-    'query': sql['displayAll'],
+    'query': req_sql.sql['displayAll'],
     'process': [
         lambda i: [
             i,
-            [i.query(sql['prod'], x['substitute_id']-1) for x in i.result]
+            [i.query(req_sql.sql['prod'], x['substitute_id']-1) for x in i.result]
         ],
         lambda i: [
             i[0],

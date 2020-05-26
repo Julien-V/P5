@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # coding : utf-8
 
-from openff.models import config as cfg
+from openff.models import req_sql
 
 
 class Category:
@@ -36,7 +36,7 @@ class Category:
         valid = self._validate()
         if not valid:
             return
-        sql = cfg.sql['insert_cat']
+        sql = req_sql.sql['insert_cat']
         sql_args = (self.name,)
         try:
             self.cursor.execute(sql, sql_args)

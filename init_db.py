@@ -4,7 +4,7 @@
 import json
 import requests
 
-from openff.models import config as cfg
+import config as cfg
 
 from openff.controllers import product, category
 

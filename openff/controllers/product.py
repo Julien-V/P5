@@ -3,7 +3,8 @@
 
 from datetime import datetime
 
-from openff.models import config as cfg
+from openff.models import req_sql
+import config as cfg
 
 
 class Product:
@@ -69,13 +70,13 @@ class Product:
     def _insert(self):
         """This method inserts the product into database"""
         s = self.spec
-        sql = cfg.sql['insert_prod']
+        sql = req_sql.sql['insert_prod']
         sql_args = (
             s['product_name'], s['brands'], s['code'],
             s['categories'], s['nutrition_grades'],
             s['stores'], s['url'], s['added_timestamp']
             )
-        sql2 = cfg.sql['insert_PiC']
+        sql2 = req_sql.sql['insert_PiC']
         try:
             self.cursor.execute(sql, sql_args)
             sql2_args = (self.cat_id, self.cursor.lastrowid)
@@ -90,7 +91,7 @@ class Product:
         """
         ts = int(datetime.now().timestamp())
         # sql = UPDATE Products SET {} = {}, {}, {} WHERE id= {}
-        sql = cfg.sql['prod_update']
+        sql = req_sql.sql['prod_update']
         key = 'substitute_id'
         sql_args = (
             update[key],

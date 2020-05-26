@@ -3,7 +3,7 @@
 
 import os
 
-from openff.models import config as cfg
+import config as cfg
 
 
 class Controller:

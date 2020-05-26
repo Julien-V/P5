@@ -5,7 +5,8 @@
 import init_db
 
 from openff.models import db
-from openff.models import config as cfg
+from openff.models import req_sql
+import config as cfg
 
 from openff.controllers import product
 
@@ -26,7 +27,7 @@ class App:
         self.running = False
         self.first = False
         # Const
-        self.sql = cfg.sql.copy()
+        self.sql = req_sql.sql.copy()
         self.result = []
         self.item = dict()
         self.cat_id = None
