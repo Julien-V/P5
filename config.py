@@ -176,12 +176,13 @@ param_ext_sc = {
     ],
 }
 # display
+prod_by_id = req_sql.sql['prod']
 param_ext_dc = {
     'query': req_sql.sql['displayAll'],
     'process': [
         lambda i: [
             i,
-            [i.query(req_sql.sql['prod'], x['substitute_id']-1) for x in i.result]
+            [i.query(prod_by_id, x['substitute_id']-1) for x in i.result]
         ],
         lambda i: [
             i[0],
