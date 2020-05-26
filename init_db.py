@@ -28,20 +28,16 @@ class Populate():
         self.count = 0
         self.result_list = []
 
-    def create_url(self):
-        """This method adds self.param keys and values to self.param"""
-        for key in self.param:
-            self.url += f"{key}={self.param[key]}"
-            self.url += "&"
-        self.url = self.url[:-1]
-
     def get_and_load(self):
         """This method does the request and decode returned JSON
         :return: JSON decoded by json.loads()"""
         requesting = True
         while requesting:
             try:
-                r = requests.get(self.url, headers=self.headers)
+                r = requests.get(
+                    self.url,
+                    headers=self.headers,
+                    params=self.param)
                 requesting = False
             except requests.exceptions.Timeout:
                 print("[!] Timeout.")
@@ -69,7 +65,6 @@ class Populate():
             prod_obj.get_validate_insert(prod)
 
     def run(self):
-        self.create_url()
         result = self.get_and_load()
         if "count" in result.keys():
             self.count = int(result["count"])
@@ -77,7 +72,6 @@ class Populate():
                 self.result_list += result["products"]
                 while self.count < len(self.result_list):
                     self.param["page"] = int(self.param["page"])+1
-                    self.create_url()
                     result = self.get_and_load()
                     if "products" in result.keys():
                         self.result_list += result["products"]
