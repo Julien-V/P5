@@ -5,7 +5,7 @@ import os
 import shutil
 
 
-class MenuItem():
+class MenuItem:
     """This class is the parent class of menu_component class"""
     def __init__(self, indent=1):
         """This method initializes the class

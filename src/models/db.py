@@ -9,7 +9,7 @@ import mysql.connector as mysql_c
 from src.models import config as cfg
 
 
-class DB():
+class DB:
     """This class connects or creates a MySQL database."""
     def __init__(self):
         """This method initializes the class and call self.connect()"""

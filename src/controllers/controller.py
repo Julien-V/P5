@@ -6,7 +6,7 @@ import os
 from src.models import config as cfg
 
 
-class Controller():
+class Controller:
     """This class controls the validity of user's anwser"""
     def __init__(self, view, model):
         """This method initializes the class

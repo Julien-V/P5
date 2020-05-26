@@ -4,7 +4,7 @@
 from src.models import config as cfg
 
 
-class Category():
+class Category:
     """This class represents a category,
     control and insert it into database
     """

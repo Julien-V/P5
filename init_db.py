@@ -9,7 +9,7 @@ from src.models import config as cfg
 from src.controllers import product, category
 
 
-class Populate():
+class Populate:
     """This class gets all the products in a category
     and insert them in database
     """

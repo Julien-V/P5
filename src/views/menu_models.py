@@ -4,7 +4,7 @@
 from src.views import menu_component as menu_c
 
 
-class ChoiceList():
+class ChoiceList:
     """This class gathers multiples components from src.views.menu_component
     in order to create and display a view.
     This view display a list and an input to get user's anwser.
@@ -75,7 +75,7 @@ class ChoiceList():
         return self.prompt_obj.get()
 
 
-class PrintLineDB():
+class PrintLineDB:
     """This class gathers multiples components from src.views.menu_component
     in order to create and display a view.
     This view display a product details (dict)

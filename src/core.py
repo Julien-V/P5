@@ -10,7 +10,7 @@ from src.models import config as cfg
 from src.controllers import product
 
 
-class App():
+class App:
     """Main Class : controllers, views and models used by this class
     >>> app = core.App()
     >>> app.run()

@@ -6,7 +6,7 @@ from datetime import datetime
 from src.models import config as cfg
 
 
-class Product():
+class Product:
     """This class represents a product,
     control and insert its caracteristics into database
     """
