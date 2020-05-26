@@ -38,7 +38,15 @@ class Populate():
     def get_and_load(self):
         """This method does the request and decode returned JSON
         :return: JSON decoded by json.loads()"""
-        r = requests.get(self.url, headers=self.headers)
+        requesting = True
+        while requesting:
+            try:
+                r = requests.get(self.url, headers=self.headers)
+                requesting = False
+            except requests.exceptions.Timeout:
+                print("[!] Timeout.")
+            except requests.exceptions.RequestException as e:
+                print(f"[!] Error : {e}")
         result = json.loads(r.text)
         return result
 
