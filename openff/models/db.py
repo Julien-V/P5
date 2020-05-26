@@ -6,7 +6,7 @@ import getpass
 import mysql.connector as mysql_c
 # from mysql.connector import errorcode
 
-from src.models import config as cfg
+from openff.models import config as cfg
 
 
 class DB:

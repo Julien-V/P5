@@ -3,14 +3,14 @@
 
 import os
 
-from src.models import config as cfg
+from openff.models import config as cfg
 
 
 class Controller:
     """This class controls the validity of user's anwser"""
     def __init__(self, view, model):
         """This method initializes the class
-        :param view: a view (src.views.menu_models)
+        :param view: a view (openff.views.menu_models)
         :param model: a model, database or cursor"""
         self.view = view
         self.model = model

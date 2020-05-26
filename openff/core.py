@@ -4,10 +4,10 @@
 
 import init_db
 
-from src.models import db
-from src.models import config as cfg
+from openff.models import db
+from openff.models import config as cfg
 
-from src.controllers import product
+from openff.controllers import product
 
 
 class App:
@@ -61,7 +61,7 @@ class App:
 
     def first_run(self):
         """Create a Populate object for each category
-            in src.models.config.cat to get products and insert them in db
+            in openff.models.config.cat to get products and insert them in db
         """
         for cat_id, category in enumerate(cfg.cat):
             param = cfg.param.copy()
@@ -72,8 +72,8 @@ class App:
     def display_view(self, view, ctrl, args, r):
         """This method chooses which view is given by the current step
         then create this view with appropriate controller
-        :param view: a view (src.views.menu_models)
-        :param ctrl: a controller (src.controllers.controller)
+        :param view: a view (openff.views.menu_models)
+        :param ctrl: a controller (openff.controllers.controller)
         :param args: args for the view
         :param r: previous user's anwser
         """

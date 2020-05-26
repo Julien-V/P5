@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # coding : utf-8
 
-from src.models import config as cfg
+from openff.models import config as cfg
 
 
 class Category:

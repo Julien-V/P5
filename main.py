@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # coding : utf-8
 
-from src import core
+from openff import core
 
 
 def main(debug=False):

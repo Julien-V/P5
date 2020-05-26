@@ -4,9 +4,9 @@
 import json
 import requests
 
-from src.models import config as cfg
+from openff.models import config as cfg
 
-from src.controllers import product, category
+from openff.controllers import product, category
 
 
 class Populate:

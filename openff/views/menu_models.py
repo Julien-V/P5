@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 # coding : utf-8
 
-from src.views import menu_component as menu_c
+from openff.views import menu_component as menu_c
 
 
 class ChoiceList:
-    """This class gathers multiples components from src.views.menu_component
+    """This class gathers multiples components from openff.views.menu_component
     in order to create and display a view.
     This view display a list and an input to get user's anwser.
     Title, some lines before the input and input customization are optionals
@@ -67,7 +67,8 @@ class ChoiceList:
     def get(self):
         """This method prints the result of get() method in each
         menu_components added to queue
-        :return: the method get() of a src.views.menu_component.Prompt object
+        :return: the method get() of a
+        openff.views.menu_component.Prompt object
         """
         for elem in self.queue:
             for line in elem.get():
@@ -76,7 +77,7 @@ class ChoiceList:
 
 
 class PrintLineDB:
-    """This class gathers multiples components from src.views.menu_component
+    """This class gathers multiples components from openff.views.menu_component
     in order to create and display a view.
     This view display a product details (dict)
     Title, some lines before the input and input customization are optionals

@@ -54,63 +54,63 @@ Appelle la méthode core.App.run()
 
 Récupère les produits d'une catégorie via l'API d'Open Food Facts et les insères dans la base de données
 
-### src/
+### openff/
 
-`src.core.App`
+`openff.core.App`
 
 Class principale, gère les controllers, les views et les models
 
-### src/controllers
+### openff/controllers
 
-`src.controllers.controller.Controller`
+`openff.controllers.controller.Controller`
 
 Contrôle la validité des différentes réponses utilisateur
 
-`src.controllers.category.Category`
+`openff.controllers.category.Category`
 
 Représente une catégorie, contrôle et insère dans la BDD
 
-`src.controllers.product.Product`
+`openff.controllers.product.Product`
 
 Représente un produit, contrôle et insère dans la BDD
-### src/models
+### openff/models
 
-`src.models.config`
+`openff.models.config`
 
 Fichier de configuration, contient les étapes et les requêtes SQL
 
-`src.models.db.DB`
+`openff.models.db.DB`
 
 Permet d'interagir avec la base de données
-### src/views
+### openff/views
 
-`src.views.menu.MenuItem`
+`openff.views.menu.MenuItem`
 
-Class parent pour les objets de src.views.menu_component
+Class parent pour les objets de openff.views.menu_component
 
-`src.views.menu.menu_component.Title`
+`openff.views.menu.menu_component.Title`
 
 Une sous class de MenuItem pour afficher un titre
 
-`src.views.menu.menu_component.Prompt`
+`openff.views.menu.menu_component.Prompt`
 
 Une sous class de MenuItem pour personnaliser l'affichage du input
 
-`src.views.menu.menu_component.PrintList`
+`openff.views.menu.menu_component.PrintList`
 
 Une sous class de MenuItem pour afficher une liste
 
-`src.views.menu.menu_component.PrintLine`
+`openff.views.menu.menu_component.PrintLine`
 
 Une sous class de MenuItem pour afficher une ligne
 
-`src.views.menu.menu_models.ChoiceList`
+`openff.views.menu.menu_models.ChoiceList`
 
-Cette class rassemble différents composants de src.views.menu_component pour créer une view permettant d'afficher une liste et de sélectionner un élément de cette liste
+Cette class rassemble différents composants de openff.views.menu_component pour créer une view permettant d'afficher une liste et de sélectionner un élément de cette liste
 
-`src.views.menu.menu_models.PrintLineDB`
+`openff.views.menu.menu_models.PrintLineDB`
 
-Cette class rassemble différents composants de src.views.menu_component pour créer une view affichant le détail d'un produit ou le produit et le substitut côte à côte.
+Cette class rassemble différents composants de openff.views.menu_component pour créer une view affichant le détail d'un produit ou le produit et le substitut côte à côte.
 
 
 
@@ -137,7 +137,7 @@ python3 main.py
 DROP DATABASE openff;
 ```
 ### Ajouter la catégorie dans config.py
-_Dans src.models.config_
+_Dans openff.models.config_
 ```python
 cat = ["desserts-au-chocolat", "boissons-instantanees"]
 cat.append("cereales-au-chocolat")

@@ -3,7 +3,7 @@
 
 from datetime import datetime
 
-from src.models import config as cfg
+from openff.models import config as cfg
 
 
 class Product:

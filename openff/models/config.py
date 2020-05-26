@@ -3,10 +3,10 @@
 
 import getpass
 
-# from src.views import menu
-from src.views import menu_models as mm
+# from openff.views import menu
+from openff.views import menu_models as mm
 
-from src.controllers import controller as ctrl
+from openff.controllers import controller as ctrl
 
 locale = "fr"
 title = "Projet 5"
@@ -21,7 +21,7 @@ db = dict()
 
 db["name"] = "openff"
 db["create_file_name"] = "create-db.sql"
-db["create_file_path"] = "src/models/"
+db["create_file_path"] = "openff/models/"
 
 db["connect"] = {
     'user': getpass.getuser(),
